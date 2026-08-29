@@ -2,13 +2,13 @@
 authors = ["Akmal Chaudhri"]
 language = "en"
 src = "src"
-title = "Real-Time Vehicle Tracker using Neo4j, Databricks Lakebase and OpenStreetMap"
+title = "Real-Time Vehicle Tracking with Neo4j, Databricks Lakebase and OpenStreetMap"
 description = "A fleet operations demo using Neo4j, Databricks Lakebase and OpenStreetMap"
 
 [output.html]
 hash-files = true
-git-repository-url = "https://github.com/realtime-vehicle-tracker/realtime-vehicle-tracker.github.io"
-edit-url-template = "https://github.com/realtime-vehicle-tracker/realtime-vehicle-tracker.github.io/edit/main/src/{path}"
+git-repository-url = "https://github.com/realtime-vehicle-tracking/realtime-vehicle-tracking.github.io"
+edit-url-template = "https://github.com/realtime-vehicle-tracking/realtime-vehicle-tracking.github.io/edit/main/src/{path}"
 no-section-label = true
 
 [output.html.search]

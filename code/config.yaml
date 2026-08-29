@@ -1,0 +1,112 @@
+# Vehicle Tracking System -- City Configuration
+# London Borough of Merton
+#
+# The five zones are logical simplified zones used by the vehicle-tracking
+# demonstration. They are NOT official neighborhood boundary polygons.
+#
+# The underlying OSM road network is the full London Borough of Merton,
+# downloaded via OSMnx. The zone rectangles are a simplified abstraction
+# used for vehicle dispatch, zone activity reporting and graph queries.
+#
+# center_lat / center_lon are verified road-network coordinates used for
+# nearest-node lookup when computing shortest paths. They may fall outside
+# the zone bounding box -- what matters is that they map to a real road node
+# within the zone's road network.
+#
+# Intersections outside all zone boxes are assigned to Unknown automatically.
+#
+# The osmnx_place value must resolve via the Nominatim geocoder.
+# Test with: ox.geocode_to_gdf(osmnx_place)
+
+city:
+  name: "London Borough of Merton"
+  schema_name: "merton_vehicles"
+  osmnx_place: "London Borough of Merton, UK"
+  network_type: "drive"
+  map_lat: 51.410
+  map_lon: -0.188
+  map_zoom: 12
+
+zones:
+  - name: "Wimbledon"
+    lat_min: 51.4100
+    lat_max: 51.4411
+    lon_min: -0.2495
+    lon_max: -0.1900
+    color: [30, 144, 255]
+    center_lat: 51.4215
+    center_lon: -0.2064
+
+  - name: "Raynes Park"
+    lat_min: 51.4100
+    lat_max: 51.4411
+    lon_min: -0.1900
+    lon_max: -0.1245
+    color: [255, 165, 0]
+    center_lat: 51.4094
+    center_lon: -0.2299
+
+  - name: "Colliers Wood"
+    lat_min: 51.3950
+    lat_max: 51.4100
+    lon_min: -0.2495
+    lon_max: -0.1800
+    color: [50, 205, 50]
+    center_lat: 51.4183
+    center_lon: -0.1779
+
+  - name: "Mitcham"
+    lat_min: 51.3950
+    lat_max: 51.4100
+    lon_min: -0.1800
+    lon_max: -0.1245
+    color: [220, 20, 60]
+    center_lat: 51.4011
+    center_lon: -0.1672
+
+  - name: "Morden"
+    lat_min: 51.3809
+    lat_max: 51.3950
+    lon_min: -0.2495
+    lon_max: -0.1245
+    color: [148, 0, 211]
+    center_lat: 51.4022
+    center_lon: -0.1948
+
+adjacency:
+  - [Wimbledon, Raynes Park]
+  - [Wimbledon, Colliers Wood]
+  - [Colliers Wood, Mitcham]
+  - [Mitcham, Morden]
+
+vehicles:
+  - id: "V001"
+    driver: "Alice Mensah"
+    zone: "Wimbledon"
+  - id: "V002"
+    driver: "Ben Okafor"
+    zone: "Wimbledon"
+  - id: "V003"
+    driver: "Clara Singh"
+    zone: "Raynes Park"
+  - id: "V004"
+    driver: "David Petrov"
+    zone: "Raynes Park"
+  - id: "V005"
+    driver: "Elena Costa"
+    zone: "Colliers Wood"
+  - id: "V006"
+    driver: "Femi Adeyemi"
+    zone: "Colliers Wood"
+  - id: "V007"
+    driver: "Grace Nakamura"
+    zone: "Mitcham"
+  - id: "V008"
+    driver: "Hassan Ali"
+    zone: "Mitcham"
+  - id: "V009"
+    driver: "Isla Ferreira"
+    zone: "Morden"
+  - id: "V010"
+    driver: "James Osei"
+    zone: "Morden"

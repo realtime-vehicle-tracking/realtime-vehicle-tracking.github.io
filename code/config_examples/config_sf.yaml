@@ -1,0 +1,109 @@
+# Vehicle Tracking System -- City Configuration
+# San Francisco: Noe Valley, Castro, Glen Park, Bernal Heights, Visitacion Valley
+#
+# Road network loaded from a pre-clipped OSM file (sf-central-southeast.osm.pbf)
+# downloaded from Geofabrik and clipped using pyrosm.
+#
+# Zones are logical simplified zones for the graph demo, not official
+# San Francisco neighborhood boundary polygons.
+#
+# To regenerate the clipped file:
+#   1. Download california-latest.osm.pbf from Geofabrik
+#   2. Run 00_prepare_osm.ipynb
+
+city:
+  name: "San Francisco"
+  schema_name: "sf_vehicles"
+  osmnx_place: "Noe Valley, San Francisco, California"
+  osm_file: "sf-central-southeast.osm.pbf"
+  osm_bbox: [37.7016, 37.7649, -122.4577, -122.3923]  # south, north, west, east
+  osm_source: "https://download.geofabrik.de/north-america/us/california-latest.osm.pbf"
+  osm_source_file: "california-latest.osm.pbf"
+  network_type: "drive"
+  map_lat: 37.733
+  map_lon: -122.425
+  map_zoom: 13
+
+zones:
+  - name: "Noe Valley"
+    lat_min: 37.7330
+    lat_max: 37.7649
+    lon_min: -122.4577
+    lon_max: -122.4250
+    color: [30, 144, 255]
+    center_lat: 37.749
+    center_lon: -122.441
+
+  - name: "Castro"
+    lat_min: 37.7330
+    lat_max: 37.7649
+    lon_min: -122.4250
+    lon_max: -122.3923
+    color: [50, 205, 50]
+    center_lat: 37.749
+    center_lon: -122.409
+
+  - name: "Glen Park"
+    lat_min: 37.7016
+    lat_max: 37.7330
+    lon_min: -122.4577
+    lon_max: -122.4250
+    color: [220, 20, 60]
+    center_lat: 37.717
+    center_lon: -122.441
+
+  - name: "Bernal Heights"
+    lat_min: 37.7016
+    lat_max: 37.7330
+    lon_min: -122.4250
+    lon_max: -122.4087
+    color: [255, 165, 0]
+    center_lat: 37.717
+    center_lon: -122.417
+
+  - name: "Visitacion Valley"
+    lat_min: 37.7016
+    lat_max: 37.7330
+    lon_min: -122.4087
+    lon_max: -122.3923
+    color: [148, 0, 211]
+    center_lat: 37.717
+    center_lon: -122.400
+
+adjacency:
+  - [Noe Valley, Castro]
+  - [Noe Valley, Glen Park]
+  - [Glen Park, Bernal Heights]
+  - [Bernal Heights, Visitacion Valley]
+
+vehicles:
+  - id: "V001"
+    driver: "Alice Chen"
+    zone: "Noe Valley"
+  - id: "V002"
+    driver: "Ben Reyes"
+    zone: "Noe Valley"
+  - id: "V003"
+    driver: "Clara Park"
+    zone: "Castro"
+  - id: "V004"
+    driver: "David Kim"
+    zone: "Castro"
+  - id: "V005"
+    driver: "Elena Rossi"
+    zone: "Glen Park"
+  - id: "V006"
+    driver: "Femi Johnson"
+    zone: "Glen Park"
+  - id: "V007"
+    driver: "Grace Liu"
+    zone: "Bernal Heights"
+  - id: "V008"
+    driver: "Hassan Brown"
+    zone: "Bernal Heights"
+  - id: "V009"
+    driver: "Isla Martinez"
+    zone: "Visitacion Valley"
+  - id: "V010"
+    driver: "James Wong"
+    zone: "Visitacion Valley"

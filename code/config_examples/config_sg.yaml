@@ -1,0 +1,108 @@
+# Vehicle Tracking System -- City Configuration
+# Singapore Central: Toa Payoh, Bishan, Ang Mo Kio, Serangoon, Novena
+#
+# Road network loaded from a pre-clipped OSM file (singapore-central.osm.pbf)
+# downloaded from Geofabrik and clipped using pyrosm.
+#
+# To regenerate the clipped file:
+#   1. Download malaysia-singapore-brunei-latest.osm.pbf from Geofabrik
+#   2. Run the pyrosm clipping notebook
+
+city:
+  name: "Singapore Central"
+  schema_name: "sg_vehicles"
+  osmnx_place: "Toa Payoh, Singapore"
+  osm_file: "singapore-central.osm.pbf"
+  osm_bbox: [1.3175, 1.3550, 103.8194, 103.8627] # south, north, west, east
+  osm_source: "https://download.geofabrik.de/asia/malaysia-singapore-brunei-latest.osm.pbf"
+  osm_source_file: "malaysia-singapore-brunei-latest.osm.pbf"
+  network_type: "drive"
+  map_lat: 1.336
+  map_lon: 103.841
+  map_zoom: 13
+
+zones:
+  - name: "Bishan"
+    lat_min: 1.3360
+    lat_max: 1.3550
+    lon_min: 103.8194
+    lon_max: 103.8340
+    color: [50, 205, 50]
+    center_lat: 1.346
+    center_lon: 103.827
+
+  - name: "Ang Mo Kio"
+    lat_min: 1.3360
+    lat_max: 1.3550
+    lon_min: 103.8340
+    lon_max: 103.8490
+    color: [255, 165, 0]
+    center_lat: 1.346
+    center_lon: 103.842
+
+  - name: "Serangoon"
+    lat_min: 1.3360
+    lat_max: 1.3550
+    lon_min: 103.8490
+    lon_max: 103.8627
+    color: [220, 20, 60]
+    center_lat: 1.346
+    center_lon: 103.856
+
+  - name: "Toa Payoh"
+    lat_min: 1.3175
+    lat_max: 1.3360
+    lon_min: 103.8194
+    lon_max: 103.8410
+    color: [30, 144, 255]
+    center_lat: 1.327
+    center_lon: 103.830
+
+  - name: "Novena"
+    lat_min: 1.3175
+    lat_max: 1.3360
+    lon_min: 103.8410
+    lon_max: 103.8627
+    color: [148, 0, 211]
+    center_lat: 1.327
+    center_lon: 103.852
+
+adjacency:
+  - [Bishan, Ang Mo Kio]
+  - [Bishan, Toa Payoh]
+  - [Ang Mo Kio, Serangoon]
+  - [Toa Payoh, Serangoon]
+  - [Toa Payoh, Novena]
+
+vehicles:
+  - id: "V001"
+    driver: "Alice Tan"
+    zone: "Toa Payoh"
+  - id: "V002"
+    driver: "Ben Lim"
+    zone: "Toa Payoh"
+  - id: "V003"
+    driver: "Clara Ng"
+    zone: "Bishan"
+  - id: "V004"
+    driver: "David Lee"
+    zone: "Bishan"
+  - id: "V005"
+    driver: "Elena Koh"
+    zone: "Ang Mo Kio"
+  - id: "V006"
+    driver: "Femi Ibrahim"
+    zone: "Ang Mo Kio"
+  - id: "V007"
+    driver: "Grace Kumar"
+    zone: "Serangoon"
+  - id: "V008"
+    driver: "Hassan Ali"
+    zone: "Serangoon"
+  - id: "V009"
+    driver: "Isla Chen"
+    zone: "Novena"
+  - id: "V010"
+    driver: "James Rajan"
+    zone: "Novena"
+    

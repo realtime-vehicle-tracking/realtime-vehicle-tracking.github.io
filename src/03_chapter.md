@@ -12,7 +12,7 @@ We also need to know which zones border which other zones. The simulator uses th
 
 We define five logical zones for Merton, each as a simple bounding box:
 
-| Zone | Lat range | Lon range |
+| Zone | Latitude range | Longitude range |
 |---|---|---|
 | Wimbledon | 51.4100 -- 51.4411 | -0.2495 -- -0.1900 |
 | Raynes Park | 51.4100 -- 51.4411 | -0.1900 -- -0.1245 |
@@ -64,7 +64,7 @@ For Merton, this assigns nearly all intersections to named zones and 1 to Unknow
 
 ### Zone Adjacency
 
-The adjacency relationships define which zones border which others. For Merton, Wimbledon acts as the hub, as it borders both Raynes Park to the east and Colliers Wood to the south. The remaining chain runs Colliers Wood -> Mitcham -> Morden:
+The adjacency relationships define which zones border which others. For Merton, Wimbledon acts as the hub, as it borders both Raynes Park to the west and Colliers Wood to the east. The remaining chain runs Colliers Wood -> Mitcham -> Morden:
 
 ```
 Wimbledon

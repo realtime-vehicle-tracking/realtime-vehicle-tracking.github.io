@@ -53,14 +53,14 @@ GRANT USAGE, SELECT
 SELECT current_user;
 
 -- 6. Grant CRUD access to future tables created by that role
-ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username>
+ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username_here>
     IN SCHEMA public
     GRANT SELECT, INSERT, UPDATE, DELETE
     ON TABLES
     TO vehicle_tracker;
 
 -- 7. Grant sequence access to future sequences
-ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username>
+ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username_here>
     IN SCHEMA public
     GRANT USAGE, SELECT
     ON SEQUENCES

@@ -150,7 +150,7 @@ CREATE POINT INDEX intersection_location IF NOT EXISTS
 FOR (i:Intersection) ON (i.location)
 ```
 
-Creating it before the data load means the index is populated incrementally as nodes are inserted, which is faster than building it from scratch after loading.
+Creating it before the data load means the index is populated incrementally as nodes are inserted.
 
 ## Verifying the Result
 
@@ -173,7 +173,7 @@ For San Francisco and Singapore, the road network is loaded from a pre-clipped O
 
 The clipped files are included in the GitHub repo, so you won't need to run the prepare notebook.
 
-San Francisco's graph is larger than Merton's because the area covered is larger and SF's road network is denser. Singapore's graph is similar in size to Merton. Both are fully connected, with a single strongly connected component, which means every vehicle can reach every other zone via directed road segments.
+San Francisco's graph is larger than Merton's because the area covered is larger and its road network is denser. Singapore's graph is similar in size to Merton. Both are fully connected, with a single strongly connected component, which means every vehicle can reach every other zone via directed road segments.
 
 ## Gotchas
 

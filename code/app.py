@@ -77,8 +77,14 @@ def _make_neo4j_driver():
 def get_pg_conn():
     try:
         return _make_pg_conn()
+    except psycopg2.OperationalError as e:
+        if "OAuth" in str(e) or "not authorized" in str(e).lower():
+            st.error("Lakebase token has expired. Update LAKEBASE_TOKEN and restart the app.")
+        else:
+            st.error(f"Lakebase connection failed: {e}")
+        return None
     except Exception as e:
-        st.error(f"Postgres connection failed: {e}")
+        st.error(f"Lakebase connection failed: {e}")
         return None
 
 @st.cache_resource
@@ -90,7 +96,7 @@ def get_neo4j_driver():
         return None
 
 def _pg_alive(conn):
-    """Return True if the Postgres connection is still open and usable."""
+    """Return True if the Lakebase connection is still open and usable."""
     if conn is None:
         return False
     if conn.closed != 0:
@@ -114,11 +120,17 @@ def _neo4j_alive(driver):
         return False
 
 def get_live_pg():
-    """Return the cached Postgres connection, reconnecting only on failure."""
+    """Return the cached Lakebase connection, reconnecting only on failure."""
     conn = get_pg_conn()
     if conn is None or conn.closed != 0:
         try:
             conn = _make_pg_conn()
+        except psycopg2.OperationalError as e:
+            if "OAuth" in str(e) or "not authorized" in str(e).lower():
+                st.error("Lakebase token has expired. Update LAKEBASE_TOKEN and restart the app.")
+            else:
+                st.error(f"Lakebase reconnect failed: {e}")
+            return None
         except Exception as e:
             st.error(f"Lakebase reconnect failed: {e}")
             return None
@@ -136,7 +148,7 @@ def get_live_neo4j():
     return driver
 
 def pg_query(conn, func, *args, **kwargs):
-    """Run a Postgres query with error handling."""
+    """Run a Lakebase query with error handling."""
     if conn is None:
         return None
     try:

@@ -18,9 +18,7 @@ We'll also show how to adapt the entire system to a different city by changing a
 
 The architecture has three layers, each serving a different purpose.
 
-**Databricks Lakebase** is the operational layer. It's a fully managed Postgres database, hosted inside Databricks, that accepts the high-frequency position writes from our vehicle simulator. Every two seconds, ten vehicles each write their current coordinates to a `vehicle_positions` table. Lakebase handles this with standard `psycopg2` connectivity, foreign key constraints and BIGSERIAL auto-increment IDs. The token-based authentication enforces a natural session boundary, as the system runs for an hour at a time, which is the right behavior for a demo.
-
-**Neo4j Aura** is the graph layer. It holds the road network for Merton -- 3,203 intersections and 7,276 road segments loaded from OpenStreetMap via the OSMnx library. Neo4j answers the questions that a relational database handles with difficulty:
+**Neo4j Aura** is the graph layer. It holds the road network for Merton -- 3,203 intersections and 7,276 road segments loaded from OpenStreetMap via the OSMnx library. Aura answers the questions that a relational database handles with difficulty:
 
 - What's the shortest path between two points along drivable roads?
 - Which zones border which other zones?
@@ -28,19 +26,21 @@ The architecture has three layers, each serving a different purpose.
 
 The native spatial index on intersection nodes makes nearest-neighbor lookups fast enough to run on every map refresh.
 
-**Databricks** is the analytics layer. We'll connect to it from a local Jupyter notebook. Position data flows from Lakebase into a Delta table, where we run aggregations, such as zone demand over time, position volume trends and the cross-system join that answers "which named roads carry the most traffic?" by combining Lakebase position data with Neo4j road names.
+**Databricks Lakebase** is the operational layer. It's a fully managed Postgres database, hosted inside Databricks, that accepts the high-frequency position writes from our vehicle simulator. Every two seconds, ten vehicles each write their current coordinates to a `vehicle_positions` table. Lakebase handles this with standard `psycopg2` connectivity, foreign key constraints and BIGSERIAL auto-increment IDs. The token-based authentication enforces a natural session boundary, as the system runs for an hour at a time, which is the right behavior for a demo.
+
+**Databricks Lakehouse** is the analytics layer. We'll connect to it from a local Jupyter notebook. Position data flows from Lakebase into a Delta table, where we run aggregations, such as zone demand over time, position volume trends and the cross-system join that answers "which named roads carry the most traffic?" by combining Lakebase position data with Aura road names.
 
 The relationship between these systems is as follows:
 
+- Aura is where the *structure* lives -- the road graph that neither Lakebase nor Lakehouse knows anything about.
 - Lakebase is where data is *written*, in real time, by the simulator.
-- Neo4j is where the *structure* lives -- the road graph that neither Lakebase nor Databricks knows anything about.
-- Databricks is where we *analyse* the history that Lakebase accumulates.
+- Lakehouse is where we *analyse* the history that Lakebase accumulates.
 
 Each system has a clear role and none of the roles overlap.
 
-## What Neo4j Adds
+## What Aura Adds
 
-A natural question is: why Neo4j? We already have a Postgres database. Can't we just store road network data there too? We could store it there. But querying it could be difficult. The shortest path between two points requires traversing a graph -- following edges from node to node, keeping track of visited nodes and finding the minimum-cost sequence. In SQL this means recursive CTEs, which are slow for deep traversals. In Cypher, Neo4j's query language, it's a single function call. For example:
+A natural question is: why Aura? We already have a Postgres database. Can't we just store road network data there too? We could store it there. But querying it could be difficult. The shortest path between two points requires traversing a graph -- following edges from node to node, keeping track of visited nodes and finding the minimum-cost sequence. In SQL this means recursive CTEs, which are slow for deep traversals. In Cypher, Aura's query language, it's a single function call. For example:
 
 ```cypher
 MATCH path = shortestPath((start)-[:ROAD*..300]->(end))
@@ -94,7 +94,7 @@ export LAKEBASE_USER=your_databricks_email_here
 export LAKEBASE_TOKEN=your_oauth_token_here
 export LAKEBASE_DBNAME=databricks_postgres
 
-# Databricks SQL warehouse
+# Databricks Lakehouse
 export DATABRICKS_SERVER_HOSTNAME=dbc-xxxx.cloud.databricks.com
 export DATABRICKS_HTTP_PATH=/sql/1.0/warehouses/xxxx
 export DATABRICKS_TOKEN=your_personal_access_token_here
@@ -108,15 +108,15 @@ For longer-running sessions, Chapter 4 explains how to set up and use a native P
 
 Here's what each chapter covers:
 
-**Chapter 2: The Road Network** walks through loading the Merton road network from OpenStreetMap into Neo4j using OSMnx. We'll cover the data cleaning required to handle the quirks of OSM data, such as list-valued properties, duplicate edges and missing speed limits. We'll also describe the Neo4j schema that makes spatial queries efficient.
+**Chapter 2: The Road Network** walks through loading the Merton road network from OpenStreetMap into Aura using OSMnx. We'll cover the data cleaning required to handle the quirks of OSM data, such as list-valued properties, duplicate edges and missing speed limits. We'll also describe the Aura schema that makes spatial queries efficient.
 
 **Chapter 3: Zones and Graph Queries** defines the five zones that divide the borough, assigns each intersection to its zone and builds the zone adjacency graph. We'll show the Cypher queries that make the zone topology useful, such as nearest neighbors, multi-hop reachability and complex intersection counts.
 
 **Chapter 4: The Operational Layer** sets up the Lakebase tables that hold live vehicle data. We'll cover the table design, the indexes that make time-series queries fast and the credential options for connecting from Python.
 
-**Chapter 5: The Simulator** writes a vehicle simulator that loads the road network from Neo4j, places ten vehicles in their home zones and moves each one along Breadth-First Search (BFS)-computed shortest paths. The simulator runs as a background process and writes position updates to Lakebase every two seconds.
+**Chapter 5: The Simulator** writes a vehicle simulator that loads the road network from Aura, places ten vehicles in their home zones and moves each one along Breadth-First Search (BFS)-computed shortest paths. The simulator runs as a background process and writes position updates to Lakebase every two seconds.
 
-**Chapter 6: The Streamlit Apps** builds two Streamlit dashboards. The first one shows vehicles moving on a live map with trail history and shortest path queries. The second one connects to Databricks to show zone activity trends and road segment traffic, updated every 30 seconds.
+**Chapter 6: The Streamlit Apps** builds two Streamlit dashboards. The first one shows vehicles moving on a live map with trail history and shortest path queries. The second one connects to Lakehouse to show zone activity trends and road segment traffic, updated every 30 seconds.
 
 **Chapter 7: Bringing It All Together** covers the full system running end-to-end, the gotchas we encountered along the way and ideas for going further.
 

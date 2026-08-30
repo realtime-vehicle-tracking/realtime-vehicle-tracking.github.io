@@ -27,7 +27,7 @@ Every three seconds the entire script re-runs from top to bottom, re-querying La
 
 ### Connections
 
-Both the Neo4j driver and the Postgres connection are cached with `@st.cache_resource`. This means they're created once when the application starts and reused on every refresh, rather than opening a new connection every three seconds:
+Both the Neo4j driver and the Lakebase connection are cached with `@st.cache_resource`. This means they're created once when the application starts and reused on every refresh, rather than opening a new connection every three seconds:
 
 ```python
 @st.cache_resource
@@ -174,7 +174,7 @@ GROUP BY current_zone, DATE_TRUNC('minute', recorded_at)
 ORDER BY minute, zone
 ```
 
-This query runs on Lakehouse against the Delta table, not against Lakebase directly. For a large dataset, Lakehouse columnar storage and parallel execution make this faster than running the equivalent query on Postgres.
+This query runs on Lakehouse against the Delta table, not against Lakebase directly. For a large dataset, Lakehouse columnar storage and parallel execution make this faster than running the equivalent query on Lakebase.
 
 ### Top Road Segments -- The Cross-System Join
 
@@ -208,7 +208,7 @@ The sidebar has two control buttons:
 
 ### Production Path: Lakehouse Sync
 
-In this demo, position data flows from Lakebase to Lakehouse via the analytics dashboard's incremental sync. In production, Databricks provides a native CDC feature called Lakebase Change Data Feed that replicates Lakebase Postgres tables into Unity Catalog Delta tables automatically, with no application-level sync code needed.
+In this demo, position data flows from Lakebase to Lakehouse via the analytics dashboard's incremental sync. In production, Databricks provides a native CDC feature called Lakebase Change Data Feed that replicates Lakebase tables into Unity Catalog Delta tables automatically, with no application-level sync code needed.
 
 Lakehouse Sync requires a workspace admin to enable it from the Databricks workspace Previews page. It's currently in Public Preview and isn't available on free-tier Databricks accounts. The [developer template](https://developers.databricks.com/templates/lakebase-change-data-feed-autoscaling) walks through the setup.
 

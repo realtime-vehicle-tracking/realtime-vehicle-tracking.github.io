@@ -102,7 +102,7 @@ When assigning a destination, the simulator picks a zone with 70/30 weighting, t
 The simulator runs a simple tick loop. Each tick:
 
 1. Checks for a stop signal (discussed below)
-2. Reconnects to Postgres if the connection dropped
+2. Reconnects to Lakebase if the connection dropped
 3. Advances each vehicle one step along its route
 4. Writes a position record to Lakebase
 5. Assigns a new destination if the vehicle has reached the end of its route
@@ -139,9 +139,9 @@ node_zone = {rec["node_id"]: rec["zone"] for rec in result}
 
 The `current_zone` value is then just `node_zone.get(current_node_id, "Unknown")` on every tick.
 
-## Postgres Reconnection
+## Lakebase Reconnection
 
-The simulator handles Postgres disconnections gracefully. The OAuth token expires after one hour and the connection will drop when it does. Rather than crashing, the simulator reconnects at the start of each tick:
+The simulator handles Lakebase disconnections gracefully. The OAuth token expires after one hour and the connection will drop when it does. Rather than crashing, the simulator reconnects at the start of each tick:
 
 ```python
 def pg_reconnect(conn):
@@ -231,7 +231,7 @@ Thirty records after a few seconds of running means ten vehicles have each writt
 
 **Output buffering.** Without `-u` and `PYTHONUNBUFFERED=1`, the subprocess buffers its output and nothing appears in the notebook. Both flags are required.
 
-**readline() deadlock.** If you loop on `proc.stdout.readline()` without a sentinel, the loop blocks indefinitely once the simulator is running (because the simulator is producing output, not closing stdout). Always break on a sentinel string.
+**readline() deadlock.** If you loop on `proc.stdout.readline()` without a sentinel, the loop blocks indefinitely once the simulator is running (because the simulator is producing output, not closing `stdout`). Always break on a sentinel string.
 
 **Stop flag file location.** The `simulator.stop` flag file must be created in the same directory from which the simulator is running. If the Streamlit analytics application and the simulator are started from different directories, the button won't work. Run everything from the project root.
 

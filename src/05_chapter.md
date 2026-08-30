@@ -2,11 +2,11 @@
 
 ## What the Simulator Does
 
-The simulator is the engine that gives life to the system. It loads the road network from Neo4j into memory, places ten vehicles at their home intersections and then moves each one along the road graph, writing a GPS position to Lakebase every two seconds.
+The simulator is the engine that gives life to the system. It loads the road network from Aura into memory, places ten vehicles at their home intersections and then moves each one along the road graph, writing a GPS position to Lakebase every two seconds.
 
 The simulator has four responsibilities:
 
-1. Load the road graph from Neo4j once at startup into an in-memory adjacency structure
+1. Load the road graph from Aura once at startup into an in-memory adjacency structure
 2. Compute an initial route for each vehicle using Breadth-First Search (BFS)
 3. Move each vehicle one intersection at a time along its route, writing a position record to Lakebase at each tick
 4. Assign a new destination when a vehicle reaches the end of its current route
@@ -29,7 +29,7 @@ proc = subprocess.Popen(
 
 Two details are important here:
 
-1. `sys.executable` uses the virtual environment's Python interpreter; using the bare `python` command would pick up the system Python, which doesn't have neo4j or psycopg2 installed
+1. `sys.executable` uses the virtual environment's Python interpreter; using the bare `python` command would pick up the system Python, which doesn't have `neo4j` or `psycopg2` installed
 2. `-u` (unbuffered) combined with `PYTHONUNBUFFERED=1` forces Python to flush output immediately rather than buffering it, which means we can see the simulator's startup messages in the notebook
 
 After launch, a sentinel loop reads lines from the subprocess until it sees "Simulator running":
@@ -46,7 +46,7 @@ Once the sentinel fires, the loop exits and the simulator continues independentl
 
 ## Loading the Road Graph
 
-At startup, the simulator connects to Neo4j and loads the entire road graph into memory:
+At startup, the simulator connects to Aura and loads the entire road graph into memory:
 
 ```python
 with driver.session() as session:
@@ -58,9 +58,9 @@ with driver.session() as session:
         graph[rec["u"]].append((rec["v"], rec["length_m"]))
 ```
 
-The result is a plain Python dictionary: `{node_id: [(neighbour_id, length_m), ...]}`. With Merton's edges, this takes a second or two and uses negligible memory. All routing from this point runs entirely in this in-memory structure and no further Neo4j queries happen during the simulation loop.
+The result is a plain Python dictionary: `{node_id: [(neighbour_id, length_m), ...]}`. With Merton's edges, this takes a second or two and uses negligible memory. All routing from this point runs entirely in this in-memory structure and no further Aura queries happen during the simulation loop.
 
-Loading the full graph into memory rather than querying Neo4j per tick is a deliberate design choice. A Neo4j query per tick would add latency and load to Neo4j unnecessarily. The road network doesn't change between ticks, so there's no reason to re-read it.
+Loading the full graph into memory rather than querying Aura per tick is a deliberate design choice. An Aura query per tick would add latency and load to Aura unnecessarily. The road network doesn't change between ticks, so there's no reason to re-read it.
 
 ## BFS Routing
 
@@ -127,7 +127,7 @@ cursor.execute("""
 """, (vehicle_id, lat, lon, speed_kmh, current_zone))
 ```
 
-The `current_zone` is determined from the in-memory zone lookup and not a Neo4j query. At startup, the simulator builds a dictionary mapping each `node_id` to its zone name, loaded from Neo4j:
+The `current_zone` is determined from the in-memory zone lookup and not an Aura query. At startup, the simulator builds a dictionary mapping each `node_id` to its zone name, loaded from Aura:
 
 ```python
 result = session.run("""

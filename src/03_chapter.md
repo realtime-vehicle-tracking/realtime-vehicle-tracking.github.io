@@ -26,7 +26,7 @@ Intersections that fall outside all five boxes -- boundary edge cases from float
 
 All zone definitions live in `config.yaml`. Switching to a different city means changing the config file; the notebook code itself is city-agnostic.
 
-## Adding Zones to Neo4j
+## Adding Zones to Aura
 
 We extend the graph model from Chapter 2 with two new elements:
 
@@ -76,7 +76,7 @@ Park          |
             Morden
 ```
 
-We store adjacency bidirectionally and a single pair `[Wimbledon, Colliers Wood]` in the config generates two `ADJACENT_TO` relationships in Neo4j:
+We store adjacency bidirectionally and a single pair `[Wimbledon, Colliers Wood]` in the config generates two `ADJACENT_TO` relationships in Aura:
 
 ```cypher
 UNWIND $pairs AS pair
@@ -147,7 +147,7 @@ Result: 635. About 76% of Wimbledon's 839 intersections connect three or more ro
 
 ## Shortest Path Between Zones
 
-The most powerful query the zone graph enables is shortest path between two named zones. The Streamlit application uses this for the "Find shortest path" feature -- the user selects two zones, the app finds the nearest intersection to each zone's centre point and then asks Neo4j for the shortest directed path between them along `ROAD` relationships:
+The most powerful query the zone graph enables is shortest path between two named zones. The Streamlit application uses this for the "Find shortest path" feature -- the user selects two zones, the app finds the nearest intersection to each zone's centre point and then asks Aura for the shortest directed path between them along `ROAD` relationships:
 
 ```cypher
 MATCH (start:Intersection {node_id: $start_id}),
@@ -159,7 +159,7 @@ RETURN [node IN nodes(path) | [node.lat, node.lon]] AS coords,
 
 The `*..300` hop limit prevents the query from running indefinitely on disconnected graphs. For Merton's well-connected network, shortest paths are typically 20-100 hops. The result is a sequence of coordinates that the Streamlit application draws as a line on the map.
 
-Finding the nearest intersection to a zone centre uses Neo4j's spatial index:
+Finding the nearest intersection to a zone centre uses Aura's spatial index:
 
 ```cypher
 MATCH (i:Intersection)
@@ -173,9 +173,9 @@ LIMIT 1
 
 This runs in milliseconds because the POINT INDEX from Chapter 2 makes the spatial lookup efficient.
 
-## Why Store Zones in Neo4j?
+## Why Store Zones in Aura?
 
-We could store zone assignments in Postgres alongside the vehicle positions. The simulator could look up each vehicle's zone by querying the Lakebase `vehicles` table. Why put zones in Neo4j instead?
+We could store zone assignments in Postgres alongside the vehicle positions. The simulator could look up each vehicle's zone by querying the Lakebase `vehicles` table. Why put zones in Aura instead?
 
 Two reasons. First, the adjacency queries are natural graph traversals. "Zones reachable within two hops" is a recursive query that SQL handles with CTEs, which can be verbose and slow for deeper traversals. In Cypher it's a single line with a variable-length path pattern.
 
@@ -183,13 +183,13 @@ Second, the shortest path query crosses zone boundaries. The zone context, which
 
 ## Zone-Awareness in the Simulator
 
-The simulator uses zone membership in two ways. At startup, it reads zone membership counts from Neo4j to confirm the graph loaded correctly:
+The simulator uses zone membership in two ways. At startup, it reads zone membership counts from Aura to confirm the graph loaded correctly:
 
 ```
 Zone distribution: {'Wimbledon': 839, 'Raynes Park': 761, ...}
 ```
 
-At runtime, it determines the `current_zone` of each vehicle by checking which zone the vehicle's current intersection belongs to. This is achieved with an in-memory dictionary built from Neo4j data at startup, not a live Neo4j query per tick, so it adds no latency to the simulation loop.
+At runtime, it determines the `current_zone` of each vehicle by checking which zone the vehicle's current intersection belongs to. This is achieved with an in-memory dictionary built from Aura data at startup, not a live Aura query per tick, so it adds no latency to the simulation loop.
 
 The zone adjacency graph from the config drives the routing bias: 70% of the time a vehicle's next destination is chosen from its current zone or an adjacent zone and 30% of the time from anywhere in the borough. This creates realistic clustering and vehicles tend to stay in their home area but occasionally make longer cross-borough runs.
 
@@ -197,4 +197,4 @@ The zone adjacency graph from the config drives the routing bias: 70% of the tim
 
 **Bounding box zones are simplified.** The zone bounding boxes are logical demo zones, not official neighborhood boundaries. For Merton, the Local Plan recognizes a richer set of neighborhoods. For Singapore, the URA planning areas have irregular polygon boundaries. For San Francisco, the city publishes official neighborhood boundary maps. The YAML zones are a deliberate simplification for the demo.
 
-**Switching cities requires a full Neo4j wipe.** ROAD relationships, Intersection nodes and Zone nodes all need to be cleared before loading a new city. Clearing only ROAD relationships leaves orphaned Intersection nodes from the previous city, which then get mixed into the zone assignment for the new city.
+**Switching cities requires a full Aura wipe.** ROAD relationships, Intersection nodes and Zone nodes all need to be cleared before loading a new city. Clearing only ROAD relationships leaves orphaned Intersection nodes from the previous city, which then get mixed into the zone assignment for the new city.

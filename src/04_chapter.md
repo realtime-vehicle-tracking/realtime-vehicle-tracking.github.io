@@ -2,7 +2,7 @@
 
 ## What the Operational Layer Does
 
-Neo4j holds the road network, which is the structure of the city. But while vehicles are moving, we need somewhere to record what's actually happening: where each vehicle is right now, where it's been and what state it's in. This is the operational layer.
+Aura holds the road network, which is the structure of the city. But while vehicles are moving, we need somewhere to record what's actually happening: where each vehicle is right now, where it's been and what state it's in. This is the operational layer.
 
 The operational layer needs to handle high-frequency writes. Ten vehicles writing their position every two seconds means 300 writes per minute, sustained for as long as the simulator runs. It also needs to serve the Streamlit application, which reads the latest position of every vehicle on every refresh. These are classic OLTP characteristics: small, frequent reads and writes, low latency and strong consistency.
 
@@ -53,14 +53,14 @@ GRANT USAGE, SELECT
 SELECT current_user;
 
 -- 6. Grant CRUD access to future tables created by that role
-ALTER DEFAULT PRIVILEGES FOR ROLE <your-databricks-username>
+ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username>
     IN SCHEMA public
     GRANT SELECT, INSERT, UPDATE, DELETE
     ON TABLES
     TO vehicle_tracker;
 
 -- 7. Grant sequence access to future sequences
-ALTER DEFAULT PRIVILEGES FOR ROLE <your-databricks-username>
+ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username>
     IN SCHEMA public
     GRANT USAGE, SELECT
     ON SEQUENCES
@@ -219,4 +219,4 @@ Zero rows in `vehicle_positions` is correct at this stage -- the simulator hasn'
 
 **ALTER DEFAULT PRIVILEGES.** If you switch to native password authentication and later re-run this notebook to recreate tables (when switching cities), the new tables won't automatically inherit the permissions unless you ran the `ALTER DEFAULT PRIVILEGES` steps. This is the most common gotcha with Postgres role setup -- existing grants cover existing tables; default privileges cover future ones.
 
-**Free tier daily limit.** Databricks free accounts have a "free daily limit" on Lakebase usage. If you hit this limit, the connection will be refused. Wait until the next day or contact Databricks support.
+**Free tier daily limit.** Databricks free accounts have a "free daily limit" on usage. If you hit this limit, the connection will be refused. Wait until the next day or contact Databricks support.

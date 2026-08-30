@@ -11,11 +11,11 @@ We specifically need:
 - A spatial index on intersection coordinates so we can quickly find the nearest intersection to any GPS position
 - A connected graph, with no isolated subgraphs, so every vehicle can reach every other zone via some sequence of road segments
 
-OpenStreetMap gives us the raw data. OSMnx gives us the tools to download it, clean it and convert it to a graph we can load into Neo4j.
+OpenStreetMap gives us the raw data. OSMnx gives us the tools to download it, clean it and convert it to a graph we can load into Aura.
 
-## The Neo4j Graph Model
+## The Aura Graph Model
 
-The road network maps naturally to Neo4j's property graph model. Here's what we're storing:
+The road network maps naturally to Aura's property graph model. Here's what we're storing:
 
 ```text
 (:Intersection {node_id, lat, lon, street_count, location})
@@ -23,7 +23,7 @@ The road network maps naturally to Neo4j's property graph model. Here's what we'
 (:Intersection)
 ```
 
-Each `Intersection` node represents a road junction, which is a point where two or more roads meet. The `location` property stores a Neo4j `point()` object, which enables native spatial queries (nearest-neighbor lookup, distance calculation) without any additional libraries.
+Each `Intersection` node represents a road junction, which is a point where two or more roads meet. The `location` property stores an Aura `point()` object, which enables native spatial queries (nearest-neighbor lookup, distance calculation) without any additional libraries.
 
 Each `ROAD` relationship represents a directed road segment between two intersections. A one-way street from A to B is stored as a single relationship A -> B. A two-way street is stored as two relationships: A -> B and B -> A. The `highway` property holds the OSM road classification (`primary`, `residential`, `motorway` and so on) and `maxspeed` holds the posted speed limit where OSM data are available.
 
@@ -53,7 +53,7 @@ If `osm_file` is present, the notebook loads from the local clipped file. Otherw
 
 OSMnx returns a `MultiDiGraph`, which is a directed graph where edges can have multiple attributes, some of which are lists rather than scalars. In the OSM data model, a single road segment can carry multiple OSM tag values when the underlying data are ambiguous or inconsistent.
 
-Before loading into Neo4j, we need to clean three things:
+Before loading into Aura, we need to clean three things:
 
 1. **List-valued properties.** The `osmid`, `name`, `highway` and `maxspeed` fields can be Python lists rather than single values. We take the first element in each case:
 
@@ -99,11 +99,11 @@ edges_clean = (
 
 This reduces Merton's 7,317 raw edges to 7,276 clean edges with 41 duplicates removed.
 
-## Loading Into Neo4j
+## Loading Into Aura
 
 We load nodes and edges in separate passes, using `MERGE` to make the operation idempotent. Running the notebook twice won't create duplicate nodes.
 
-**Nodes.** Each intersection becomes a Neo4j node with a uniqueness constraint on `node_id`:
+**Nodes.** Each intersection becomes an Aura node with a uniqueness constraint on `node_id`:
 
 ```cypher
 UNWIND $rows AS row
@@ -114,7 +114,7 @@ SET i.lat          = row.lat,
     i.location     = point({latitude: row.lat, longitude: row.lon})
 ```
 
-The `location` property stores a native Neo4j spatial point, which enables the `point.distance()` function used later for nearest-driver queries.
+The `location` property stores a native Aura spatial point, which enables the `point.distance()` function used later for nearest-driver queries.
 
 **Edges.** Each road segment becomes a `ROAD` relationship. The composite `MERGE` key uses `osmid`, `u` and `v` together to uniquely identify each directed edge:
 
@@ -197,4 +197,4 @@ San Francisco's graph is larger than Merton's because the area covered is larger
 
 **Not all place names have OSM polygon boundaries.** `ox.graph_from_place()` requires Nominatim to return a polygon boundary for the place name. Neighborhood names in particular often return only a point. Test with `ox.geocode_to_gdf(place)` and check that `geom_type` is `Polygon` or `MultiPolygon` before using a place name in your config.
 
-**nx.compose() node count is misleading.** `len(G.nodes)` on the first graph in a compose chain returns only that graph's node count. After composing multiple graphs, Neo4j receives the full union of all node IDs. The final Neo4j intersection count is correct; the intermediate `len(G.nodes)` is not.
+**nx.compose() node count is misleading.** `len(G.nodes)` on the first graph in a compose chain returns only that graph's node count. After composing multiple graphs, Aura receives the full union of all node IDs. The final Aura intersection count is correct; the intermediate `len(G.nodes)` is not.

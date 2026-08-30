@@ -59,7 +59,7 @@ It's worth noting why three systems are better than one for this use case.
 
 **Why not just Lakebase?** Lakebase can store the road network as a table of edges and you can find shortest paths with recursive CTEs. But the queries are verbose, slow for deep traversals and don't scale to multi-hop zone reachability queries. A graph database handles these naturally.
 
-**Why not just Lakehouse?** Lakehouse is excellent for large-scale analytics and historical queries. But it's not designed for low-latency row reads or high-frequency inserts. Reading the latest position of 10 vehicles from a Delta table on every 3-second refresh would be much slower and more expensive than reading from Postgres.
+**Why not just Lakehouse?** Lakehouse is excellent for large-scale analytics and historical queries. But it's not designed for low-latency row reads or high-frequency inserts. Reading the latest position of 10 vehicles from a Delta table on every 3-second refresh would be much slower and more expensive than reading from Lakebase.
 
 The three-system architecture isn't complexity for its own sake. Each system does what it's genuinely good at and the results are combined at the application layer.
 
@@ -77,4 +77,4 @@ The system as built is a working demo. Here are some directions for making it mo
 
 **H3 indexing.** Uber's H3 library provides a hexagonal grid system that covers the globe at multiple resolutions. Indexing intersections by H3 cell would make the nearest-driver query more efficient at scale and is the approach used in production ride-hailing systems.
 
-**Kafka integration.** Replacing the simulator's direct Postgres writes with a Kafka producer and adding a consumer that writes to Lakebase, would make the architecture more production-ready. It would also decouple the simulator from Lakebase, as the simulator could run even when Lakebase is temporarily unavailable, with positions queued in Kafka until connectivity is restored.
+**Kafka integration.** Replacing the simulator's direct Lakebase writes with a Kafka producer and adding a consumer that writes to Lakebase, would make the architecture more production-ready. It would also decouple the simulator from Lakebase, as the simulator could run even when Lakebase is temporarily unavailable, with positions queued in Kafka until connectivity is restored.

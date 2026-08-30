@@ -191,8 +191,6 @@ San Francisco's graph is larger than Merton's because the area covered is larger
 
 **pbf format.** Geofabrik distributes OSM data in Protocol Buffer format (`.osm.pbf`). This is a binary format that OSMnx's `graph_from_xml()` function can't read directly, as it expects plain OSM XML. Use `pyrosm` to read `.pbf` files.
 
-**pyrosm `--no-deps`.** Install pyrosm with `--no-deps` to suppress protobuf version conflict warnings from other packages in the environment.
-
 **nx.compose() produces disconnected subgraphs.** Composing multiple neighborhood polygon graphs with `nx.compose()` can produce isolated subgraphs if the constituent polygons don't share road edges at their boundaries. This causes `shortestPath()` to return no result between nodes in different subgraphs. Use `pyrosm` with a bounding box to get a single connected graph instead.
 
 **Not all place names have OSM polygon boundaries.** `ox.graph_from_place()` requires Nominatim to return a polygon boundary for the place name. Neighborhood names in particular often return only a point. Test with `ox.geocode_to_gdf(place)` and check that `geom_type` is `Polygon` or `MultiPolygon` before using a place name in your config.

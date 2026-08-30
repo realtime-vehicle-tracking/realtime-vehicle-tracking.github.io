@@ -8,16 +8,16 @@ With all six chapters complete, the system looks like this:
 
 - **Databricks Lakebase.** Holds the live operational data with vehicle positions written every two seconds by the simulator, vehicle statuses and trip records. It answers OLTP questions: where is vehicle V003 right now, which vehicles are currently idle, how many positions have been written in the last 10 minutes.
 
-- **Databricks.** Holds the analytical history with position data synced from Lakebase into a Delta table, aggregated by zone and road segment. It answers analytical questions: which zones have been busiest in the last hour, which roads carry the most vehicle traffic.
+- **Databricks Lakehouse.** Holds the analytical history with position data synced from Lakebase into a Delta table, aggregated by zone and road segment. It answers analytical questions: which zones have been busiest in the last hour, which roads carry the most vehicle traffic.
 
-None of these systems knows about the others. Neo4j knows nothing about Lakebase positions. Lakebase knows nothing about road names. Databricks knows nothing about zone topology. The intelligence sits in the application layer -- the simulator, the Streamlit applications and the analytics notebook -- which orchestrates queries across all three and combines the results.
+None of these systems knows about the others. Aura knows nothing about Lakebase positions. Lakebase knows nothing about road names. Lakehouse knows nothing about zone topology. The intelligence sits in the application layer -- the simulator, the Streamlit applications and the analytics notebook -- which orchestrates queries across all three and combines the results.
 
 ## Running the System
 
 The order of operations matters. Work through the notebooks in sequence:
 
 1. `00_prepare_osm.ipynb` -- For new cities only or if you wish to rerun the data generation for San Francisco or Singapore. Skip for Merton.
-2. `02_road_network.ipynb` -- Loads the road network into Neo4j
+2. `02_road_network.ipynb` -- Loads the road network into Aura
 3. `03_zones.ipynb` -- Assigns intersections to zones and builds the adjacency graph
 4. `04_lakebase.ipynb` -- Creates the Lakebase tables and seeds the vehicles
 5. `05_simulator.ipynb` -- Starts the simulator in the background
@@ -25,7 +25,7 @@ The order of operations matters. Work through the notebooks in sequence:
 7. In a terminal: `streamlit run app.py`
 8. In a second terminal: `streamlit run analytics_app.py --server.port 8502`
 
-**Switching cities.** Copy `config_sf.yaml` or `config_sg.yaml` to `config.yaml`, clear the Neo4j database and re-run notebooks 2 through 5. Both Streamlit applications pick up the new city automatically on restart.
+**Switching cities.** Copy `config_sf.yaml` or `config_sg.yaml` to `config.yaml`, clear the Aura database and re-run notebooks 2 through 5. Both Streamlit applications pick up the new city automatically on restart.
 
 ## Adding a New City
 
@@ -55,11 +55,11 @@ If Nominatim returns a polygon, use `osmnx_place` as a single string in your con
 
 It's worth noting why three systems are better than one for this use case.
 
-**Why not just Neo4j?** Neo4j is excellent for graph queries and spatial lookups. But it's not designed for high-frequency OLTP writes. Inserting 300 rows per minute, continuously, with low latency and strong consistency guarantees, is what Postgres is built for. Lakebase gives us a production-grade Postgres instance with no infrastructure to manage.
+**Why not just Aura?** Aura is excellent for graph queries and spatial lookups. But it's not designed for high-frequency OLTP writes. Inserting 300 rows per minute, continuously, with low latency and strong consistency guarantees, is what Postgres is built for. Lakebase gives us a production-grade Postgres instance with no infrastructure to manage.
 
-**Why not just Lakebase?** Lakebase (Postgres) can store the road network as a table of edges and you can find shortest paths with recursive CTEs. But the queries are verbose, slow for deep traversals and don't scale to multi-hop zone reachability queries. A graph database handles these naturally.
+**Why not just Lakebase?** Lakebase can store the road network as a table of edges and you can find shortest paths with recursive CTEs. But the queries are verbose, slow for deep traversals and don't scale to multi-hop zone reachability queries. A graph database handles these naturally.
 
-**Why not just Databricks?** Databricks (Delta Lake) is excellent for large-scale analytics and historical queries. But it's not designed for low-latency row reads or high-frequency inserts. Reading the latest position of 10 vehicles from a Delta table on every 3-second refresh would be much slower and more expensive than reading from Postgres.
+**Why not just Lakehouse?** Lakehouse is excellent for large-scale analytics and historical queries. But it's not designed for low-latency row reads or high-frequency inserts. Reading the latest position of 10 vehicles from a Delta table on every 3-second refresh would be much slower and more expensive than reading from Postgres.
 
 The three-system architecture isn't complexity for its own sake. Each system does what it's genuinely good at and the results are combined at the application layer.
 
@@ -71,7 +71,7 @@ The system as built is a working demo. Here are some directions for making it mo
 
 **Trip lifecycle.** The `trips` table is in the schema but not used. Adding a full dispatch cycle -- idle -> dispatched -> carrying passenger -> idle -- would make the system much more realistic. Each trip would have a pickup and dropoff zone, a vehicle assignment and timestamps for each state transition.
 
-**Lakehouse Sync.** In the demo, position data moves from Lakebase to Databricks via the analytics dashboard's incremental sync. In production, Databricks's Lakebase Change Data Feed replicates Lakebase tables into Unity Catalog Delta tables automatically via CDC. This requires enabling the feature from the workspace Previews page and is available on paid Databricks accounts. See the [developer template](https://developers.databricks.com/templates/lakebase-change-data-feed-autoscaling).
+**Lakehouse Sync.** In the demo, position data moves from Lakebase to Lakehouse via the analytics dashboard's incremental sync. In production, Databricks's Lakebase Change Data Feed replicates Lakebase tables into Unity Catalog Delta tables automatically via CDC. This requires enabling the feature from the workspace Previews page and is available on paid Databricks accounts. See the [developer template](https://developers.databricks.com/templates/lakebase-change-data-feed-autoscaling).
 
 **Actual neighborhood boundaries.** The zone bounding boxes are logical approximations. For Merton, ONS and Ordnance Survey provide ward and postcode boundary polygons. For Singapore, OneMap provides URA planning area polygons. For San Francisco, the city publishes official neighborhood boundary GeoJSON. Replacing the bounding boxes with real polygon boundaries would make zone assignment geographically accurate.
 

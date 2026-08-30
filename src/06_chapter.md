@@ -2,7 +2,7 @@
 
 ## Two Dashboards
 
-The system has two Streamlit dashboards. The vehicle tracker (`app.py`, port 8501) shows vehicles moving on a live map with trail history, nearest-driver lookup and shortest path queries between zones. The analytics dashboard (`analytics_app.py`, port 8502) shows zone activity over time and the busiest road segments, updated every 30 seconds from a Databricks Delta table.
+The system has two Streamlit dashboards. The vehicle tracker (`app.py`, port 8501) shows vehicles moving on a live map with trail history, nearest-driver lookup and shortest path queries between zones. The analytics dashboard (`analytics_app.py`, port 8502) shows zone activity over time and the busiest road segments, updated every 30 seconds from a Lakehouse Delta table.
 
 Run them alongside the simulator:
 
@@ -84,7 +84,7 @@ The sidebar lets the user select a zone and the application queries the latest p
 
 ### Shortest Path
 
-The shortest path feature lets the user pick a source and destination zone and find the road-network path between them. Clicking "Find shortest path" triggers a two-step Neo4j query: first find the nearest intersection to each zone center, then run `shortestPath()` between them:
+The shortest path feature lets the user pick a source and destination zone and find the road-network path between them. Clicking "Find shortest path" triggers a two-step Aura query: first find the nearest intersection to each zone center, then run `shortestPath()` between them:
 
 ```python
 result = session.run("""
@@ -123,15 +123,15 @@ ORDER BY updates DESC
 
 The analytics dashboard connects to three systems:
 
-1. Lakebase for live position data
-2. Databricks for Delta table storage and SQL analytics
-3. Neo4j for road names in the cross-system join
+1. Aura for road names in the cross-system join
+2. Lakebase for live position data
+3. Lakehouse for Delta table storage and SQL analytics
 
 All three connections are from a local Jupyter notebook process using standard Python connectors.
 
 ### Incremental Sync
 
-On each 30-second refresh, the dashboard reads new position records from Lakebase and appends them to a Delta table in Databricks. It tracks the last `position_id` it synced in `st.session_state` and only reads records with a higher ID:
+On each 30-second refresh, the dashboard reads new position records from Lakebase and appends them to a Delta table in Lakehouse. It tracks the last `position_id` it synced in `st.session_state` and only reads records with a higher ID:
 
 ```sql
 SELECT vp.position_id, vp.vehicle_id, v.zone AS home_zone,
@@ -174,15 +174,15 @@ GROUP BY current_zone, DATE_TRUNC('minute', recorded_at)
 ORDER BY minute, zone
 ```
 
-This query runs on Databricks against the Delta table, not against Lakebase directly. For a large dataset, Databricks's columnar storage and parallel execution make this faster than running the equivalent query on Postgres.
+This query runs on Lakehouse against the Delta table, not against Lakebase directly. For a large dataset, Lakehouse columnar storage and parallel execution make this faster than running the equivalent query on Postgres.
 
 ### Top Road Segments -- The Cross-System Join
 
 The second chart is the most interesting query in the system. It answers "which named roads carry the most vehicle traffic?" To answer this requires data from two different databases.
 
-Lakebase has the position records (lat, lon per vehicle per tick). Neo4j has the road names (what named road does each intersection belong to). Neither system alone can answer the question.
+Lakebase has the position records (lat, lon per vehicle per tick). Aura has the road names (what named road does each intersection belong to). Neither system alone can answer the question.
 
-The join runs in Python using pandas. The dashboard loads intersection coordinates and road names from Neo4j once at startup (cached for an hour) and position coordinates from Databricks on each refresh. It rounds both sets of coordinates to three decimal places (~100m precision) and joins on the rounded values:
+The join runs in Python using pandas. The dashboard loads intersection coordinates and road names from Aura once at startup (cached for an hour) and position coordinates from Lakehouse on each refresh. It rounds both sets of coordinates to three decimal places (~100m precision) and joins on the rounded values:
 
 ```python
 pos_df["lat_r"]  = pos_df["lat"].round(3)
@@ -208,7 +208,7 @@ The sidebar has two control buttons:
 
 ### Production Path: Lakehouse Sync
 
-In this demo, position data flows from Lakebase to Databricks via the analytics dashboard's incremental sync. In production, Databricks provides a native CDC feature called Lakebase Change Data Feed that replicates Lakebase Postgres tables into Unity Catalog Delta tables automatically, with no application-level sync code needed.
+In this demo, position data flows from Lakebase to Lakehouse via the analytics dashboard's incremental sync. In production, Databricks provides a native CDC feature called Lakebase Change Data Feed that replicates Lakebase Postgres tables into Unity Catalog Delta tables automatically, with no application-level sync code needed.
 
 Lakehouse Sync requires a workspace admin to enable it from the Databricks workspace Previews page. It's currently in Public Preview and isn't available on free-tier Databricks accounts. The [developer template](https://developers.databricks.com/templates/lakebase-change-data-feed-autoscaling) walks through the setup.
 
@@ -224,6 +224,6 @@ Lakehouse Sync requires a workspace admin to enable it from the Databricks works
 
 **Shortest path and pydeck key.** Without a unique key on the pydeck chart, changing the selected zones doesn't clear the old path from the map. Set the key to include the zone names: `key=f"map_{from_zone}_{to_zone}"`.
 
-**Aggressive Neo4j health checks.** Calling `driver.verify_connectivity()` on every render creates a new connection to Neo4j on every 3-second refresh. Check instead whether the driver object is `None` and reconnect only when necessary.
+**Aggressive Aura health checks.** Calling `driver.verify_connectivity()` on every render creates a new connection to Aura on every 3-second refresh. Check instead whether the driver object is `None` and reconnect only when necessary.
 
 **current_zone vs home zone.** The zone activity chart must read `current_zone` from `vehicle_positions`, not `zone` from the `vehicles` table. The home zone is static; current zone reflects where the vehicle actually is right now.

@@ -86,11 +86,11 @@ The operational layer uses three tables. Their design reflects the different acc
 
 ```sql
 CREATE TABLE vehicles (
-    vehicle_id   TEXT PRIMARY KEY,
-    driver_name  TEXT NOT NULL,
-    zone         TEXT NOT NULL,
-    status       TEXT NOT NULL DEFAULT 'idle',
-    created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    vehicle_id  TEXT PRIMARY KEY,
+    driver_name TEXT NOT NULL,
+    zone        TEXT NOT NULL,
+    status      TEXT NOT NULL DEFAULT 'idle',
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 )
 ```
 
@@ -188,7 +188,7 @@ conn = psycopg2.connect(
 conn.autocommit = True
 ```
 
-`autocommit = True` is required for DDL statements (CREATE TABLE, DROP TABLE, CREATE INDEX). Without it, DDL runs inside a transaction and some statements fail silently.
+`autocommit = True` is required for DDL statements (`CREATE TABLE`, `DROP TABLE`, `CREATE INDEX`). Without it, DDL runs inside a transaction and some statements fail silently.
 
 ## Verifying the Setup
 

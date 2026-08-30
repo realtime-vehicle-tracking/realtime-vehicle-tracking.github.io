@@ -60,6 +60,12 @@ def get_lb_conn():
         )
         conn.autocommit = True
         return conn
+    except psycopg2.OperationalError as e:
+        if "OAuth" in str(e) or "not authorized" in str(e).lower():
+            st.error("Lakebase token has expired. Update LAKEBASE_TOKEN and restart the app.")
+        else:
+            st.error(f"Lakebase connection failed: {e}")
+        return None
     except Exception as e:
         st.error(f"Lakebase connection failed: {e}")
         return None
@@ -74,7 +80,7 @@ def get_db_conn():
         )
         return conn
     except Exception as e:
-        st.error(f"Databricks connection failed: {e}")
+        st.error(f"Lakehouse connection failed: {e}")
         return None
 
 @st.cache_resource
@@ -89,7 +95,7 @@ def get_neo4j_driver():
         return None
 
 # ---------------------------------------------------------------------------
-# Neo4j road data -- loaded once at startup and cached
+# Neo4j Aura road data -- loaded once at startup and cached
 # ---------------------------------------------------------------------------
 
 @st.cache_data(ttl=3600)
@@ -121,7 +127,7 @@ def load_road_data():
         return pd.DataFrame()
 
 # ---------------------------------------------------------------------------
-# Lakebase → Databricks transfer
+# Lakebase -> Lakehouse transfer
 # ---------------------------------------------------------------------------
 
 # Check if simulator is producing fresh data
@@ -142,30 +148,38 @@ def simulator_is_running(lb_conn):
         return False
 
 def refresh_delta_table(lb_conn, db_conn):
-    """Incrementally sync new positions from Lakebase to Databricks Delta."""
+    """Incrementally sync new positions from Lakebase to Lakehouse."""
     if lb_conn is None or db_conn is None:
         return 0
 
     last_id = st.session_state.last_position_id
 
-    lb_cursor = lb_conn.cursor()
-    lb_cursor.execute(f"""
-        SELECT
-            vp.position_id,
-            vp.vehicle_id,
-            v.zone          AS home_zone,
-            vp.current_zone,
-            vp.lat,
-            vp.lon,
-            vp.recorded_at
-        FROM vehicle_positions vp
-        JOIN vehicles v ON v.vehicle_id = vp.vehicle_id
-        WHERE vp.position_id > %s
-          AND vp.recorded_at >= NOW() - INTERVAL '{HISTORY_MINS} minutes'
-        ORDER BY vp.position_id
-    """, (last_id,))
-    rows = lb_cursor.fetchall()
-    lb_cursor.close()
+    try:
+        lb_cursor = lb_conn.cursor()
+        lb_cursor.execute(f"""
+            SELECT
+                vp.position_id,
+                vp.vehicle_id,
+                v.zone          AS home_zone,
+                vp.current_zone,
+                vp.lat,
+                vp.lon,
+                vp.recorded_at
+            FROM vehicle_positions vp
+            JOIN vehicles v ON v.vehicle_id = vp.vehicle_id
+            WHERE vp.position_id > %s
+              AND vp.recorded_at >= NOW() - INTERVAL '{HISTORY_MINS} minutes'
+            ORDER BY vp.position_id
+        """, (last_id,))
+        rows = lb_cursor.fetchall()
+        lb_cursor.close()
+    except psycopg2.OperationalError as e:
+        if "OAuth" in str(e) or "not authorized" in str(e).lower():
+            st.error("Lakebase token has expired. Update LAKEBASE_TOKEN and restart the app.")
+            st.cache_resource.clear()
+        else:
+            st.warning(f"Lakebase query failed: {e}")
+        return 0
 
     if not rows:
         return 0
@@ -214,7 +228,7 @@ def refresh_delta_table(lb_conn, db_conn):
 # ---------------------------------------------------------------------------
 
 def get_zone_activity(db_conn):
-    """Zone activity over time from Databricks Delta."""
+    """Zone activity over time from Lakehouse."""
     if db_conn is None:
         return pd.DataFrame()
     try:
@@ -337,7 +351,7 @@ if not simulator_is_running(lb):
     st.warning("Simulator does not appear to be running. Start it from the Notebook.")
     st.stop()
 
-with st.spinner("Syncing new positions from Lakebase to Databricks..."):
+with st.spinner("Syncing new positions from Lakebase to Lakehouse..."):
     row_count = refresh_delta_table(lb, db)
 st.session_state.last_row_count = row_count
 
@@ -378,7 +392,7 @@ with col_left:
         st.plotly_chart(fig, width="stretch")
 
 # ---------------------------------------------------------------------------
-# Chart 2 -- Top road segments (Lakebase + Neo4j cross-system join)
+# Chart 2 -- Top road segments (Lakebase + Neo4j Aura cross-system join)
 # ---------------------------------------------------------------------------
 
 with col_right:

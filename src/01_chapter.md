@@ -4,13 +4,13 @@
 
 Real-time vehicle tracking sits at the intersection of three distinct data problems:
 
-1. **Operational problem** -- where are my vehicles right now and where have they been?
-2. **Graph problem** -- what's the fastest route between two points on an actual road network and which zones are reachable from where?
+1. **Graph problem** -- what's the fastest route between two points on an actual road network and which zones are reachable from where?
+2. **Operational problem** -- where are my vehicles right now and where have they been?
 3. **Analytical problem** -- which areas of the city are seeing the most activity and which roads carry the most traffic?
 
 Each of those problems has a natural home in a different kind of database. That's the core idea behind this book. We're not going to use one database and make it do everything. We're going to use three and let each one do what it does best.
 
-The system we'll build is a fleet operations dashboard for the London Borough of Merton -- a compact urban borough in south London with a dense road network that's large enough to be interesting but small enough to run on free-tier accounts. Ten simulated vehicles move around the borough following real road connections loaded from OpenStreetMap. A live Streamlit dashboard shows their positions, trails and the shortest path between any two zones. A separate analytics dashboard shows zone activity over time and which named roads carry the most traffic.
+The system we'll build is a fleet operations dashboard for the London Borough of Merton -- a compact urban borough in South London with a dense road network that's large enough to be interesting but small enough to run on free-tier accounts. Ten simulated vehicles move around the borough following real road connections loaded from OpenStreetMap. A live Streamlit dashboard shows their positions, trails and the shortest path between any two zones. A separate analytics dashboard shows zone activity over time and which named roads carry the most traffic.
 
 We'll also show how to adapt the entire system to a different city by changing a single configuration file. Additional example configuration files are provided for San Francisco and Singapore.
 
@@ -68,7 +68,7 @@ The supporting code in `config_validator.py` validates the config file on load a
 To follow along you'll need accounts and access to these services:
 
 1. **Neo4j Aura** -- the free tier is sufficient. Create an account at [Get Started for Free](http://console.neo4j.io/graphacademy) and note your URI, username and password.
-2. **Databricks** -- a free trial account gives us access to both Lakebase (managed Postgres) and a SQL warehouse. Create an account at [Databricks Free Edition](https://login.databricks.com/select-product?provider=DB_FREE_TIER). Create a Lakebase project named `vehicle-tracker` and a SQL warehouse before running the notebooks.
+2. **Databricks** -- a free trial account gives us access to both Lakebase and Lakehouse. Create an account at [Databricks Free Edition](https://login.databricks.com/select-product?provider=DB_FREE_TIER). Create a Lakebase project named `vehicle-tracker` and a SQL warehouse before running the notebooks.
 3. **Python** -- we'll use Python 3.12 throughout. The notebooks run in a local Jupyter environment. A virtual environment is recommended. For example:
 
 ```bash
@@ -118,6 +118,6 @@ Here's what each chapter covers:
 
 **Chapter 6: The Streamlit Apps** builds two Streamlit dashboards. The first one shows vehicles moving on a live map with trail history and shortest path queries. The second one connects to Lakehouse to show zone activity trends and road segment traffic, updated every 30 seconds.
 
-**Chapter 7: Bringing It All Together** covers the full system running end-to-end, the gotchas we encountered along the way and ideas for going further.
+**Chapter 7: Bringing It All Together** covers the full system running end-to-end and ideas for going further.
 
 Let's start by loading the road network.

@@ -69,11 +69,11 @@ To follow along you'll need accounts and access to these services:
 
 1. **Neo4j Aura** -- the free tier is sufficient. Create an account at [Get Started for Free](http://console.neo4j.io/graphacademy) and note your URI, username and password.
 2. **Databricks** -- a free trial account gives us access to both Lakebase and Lakehouse. Create an account at [Databricks Free Edition](https://login.databricks.com/select-product?provider=DB_FREE_TIER). Create a Lakebase project named `vehicle-tracker` and a SQL warehouse before running the notebooks.
-3. **Python** -- we'll use Python 3.12 throughout. The notebooks run in a local Jupyter environment. A virtual environment is recommended. For example:
+3. **Python** -- we'll use Python 3.12 throughout. The notebooks run in a local Jupyter environment. A virtual environment is highly recommended. For example:
 
 ```bash
-python3 -m venv myenv
-source myenv/bin/activate
+python3 -m venv ~/vehicle-tracker-env
+source ~/vehicle-tracker-env/bin/activate
 ```
 
 All dependencies are installed using `%pip install` cells at the top of each notebook, with pinned versions for stability.

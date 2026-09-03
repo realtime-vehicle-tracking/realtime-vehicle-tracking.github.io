@@ -55,7 +55,7 @@ If Nominatim returns a polygon, use `osmnx_place` as a single string in your con
 
 It's worth noting why three systems are better than one for this use case.
 
-**Why not just Aura?** Aura is excellent for graph queries and spatial lookups. But it's not designed for high-frequency OLTP writes. Inserting 300 rows per minute, continuously, with low latency and strong consistency guarantees, is what Postgres is built for. Lakebase gives us a production-grade Postgres instance with no infrastructure to manage.
+**Why not just Aura?** Neo4j Aura is purpose-built for graph traversals and spatial queries -- exactly what we use it for. Road networks, zone adjacency and shortest path computation are natural fits for a graph database. The native spatial index on intersection nodes makes nearest-neighbor lookups fast regardless of how many intersections the graph contains. Also, a shortest path query that would require a recursive CTE in SQL is a single function call in Cypher.
 
 **Why not just Lakebase?** Lakebase can store the road network as a table of edges and you can find shortest paths with recursive CTEs. But the queries are verbose, slow for deep traversals and don't scale to multi-hop zone reachability queries. A graph database handles these naturally.
 

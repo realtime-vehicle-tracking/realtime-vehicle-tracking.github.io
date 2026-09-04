@@ -220,7 +220,7 @@ Lakehouse Sync requires a workspace admin to enable it from the Databricks works
 
 **CARTO basemap, no Mapbox token.** The [CARTO Voyager basemap](https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json) shows roads, labels and satellite imagery without requiring a Mapbox account or API key.
 
-**@st.cache_resource and schema changes.** `@st.cache_resource` caches the database connection across the entire Streamlit session. If you drop and recreate the Lakebase tables (by re-running notebook 4), the cached connection still points at the old session. Restart Streamlit to pick up the new schema.
+**@st.cache_resource and schema changes.** `@st.cache_resource` caches the database connection across the entire Streamlit session. If you drop and recreate the Lakebase tables (by re-running `04_lakebase.ipynb`), the cached connection still points at the old session. Restart Streamlit to pick up the new schema.
 
 **Shortest path and pydeck key.** Without a unique key on the pydeck chart, changing the selected zones doesn't clear the old path from the map. Set the key to include the zone names: `key=f"map_{from_zone}_{to_zone}"`.
 

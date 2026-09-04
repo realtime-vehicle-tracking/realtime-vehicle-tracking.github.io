@@ -84,23 +84,23 @@ Credentials are passed to notebooks and the Streamlit applications using environ
 
 ```bash
 # Neo4j Aura
-export NEO4J_URI=neo4j+s://xxxx.databases.neo4j.io
-export NEO4J_USERNAME=your_username_here
-export NEO4J_PASSWORD=your_password_here
+export NEO4J_URI="neo4j+s://xxxx.databases.neo4j.io"
+export NEO4J_USERNAME="your-username"
+export NEO4J_PASSWORD="your-password"
 
 # Databricks Lakebase
-export LAKEBASE_HOST=ep-xxxx.database.eu-west-1.cloud.databricks.com
-export LAKEBASE_USER=your_databricks_email_here
-export LAKEBASE_TOKEN=your_oauth_token_here
-export LAKEBASE_DBNAME=databricks_postgres
+export LAKEBASE_HOST="ep-xxxx.database.eu-west-1.cloud.databricks.com"
+export LAKEBASE_USER="your-databricks-email"
+export LAKEBASE_TOKEN="your-oauth-token"
+export LAKEBASE_DBNAME="databricks_postgres"
 
 # Databricks Lakehouse
-export DATABRICKS_SERVER_HOSTNAME=dbc-xxxx.cloud.databricks.com
-export DATABRICKS_HTTP_PATH=/sql/1.0/warehouses/xxxx
-export DATABRICKS_TOKEN=your_personal_access_token_here
+export DATABRICKS_SERVER_HOSTNAME="dbc-xxxx.cloud.databricks.com"
+export DATABRICKS_HTTP_PATH="/sql/1.0/warehouses/xxxx"
+export DATABRICKS_TOKEN="your-personal-access-token"
 ```
 
-The Lakebase token expires after one hour. This is by design -- it's Databricks's authentication model for OAuth-based access and it gives us a natural session boundary. When it expires, we need to generate a fresh token from the Lakebase Connect dialog in the Databricks UI and update the `LAKEBASE_TOKEN` environment variable.
+Note that `LAKEBASE_TOKEN` expires after one hour. This is by design -- it's Databricks's authentication model for OAuth-based access and it gives us a natural session boundary. When it expires, we need to generate a fresh token from the Lakebase Connect dialog in the Databricks UI and update the `LAKEBASE_TOKEN` environment variable.
 
 For longer-running sessions, Chapter 4 explains how to set up and use a native Postgres role with a permanent password instead.
 

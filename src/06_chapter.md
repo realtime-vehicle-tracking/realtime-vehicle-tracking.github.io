@@ -52,7 +52,7 @@ Three pydeck layers sit on top of the basemap:
 
 1. **IconLayer.** One car icon per vehicle at its current position. The icons are PNG files loaded from a CDN. SVG icons don't work with pydeck's IconLayer, as they render silently as nothing. The icon size is fixed regardless of zoom level, which means vehicles remain visible when zoomed out.
 2. **PathLayer (trails).** A line showing each vehicle's last 20 positions. The trail fades naturally as old positions are replaced by new ones. The color matches the vehicle's home zone color, making it easy to see which zone a vehicle started from.
-3. **PathLayer (shortest path).** A gold line showing the road-network shortest path between two selected zones, when requested. This layer is only present when the user has clicked "Find shortest path". It persists across refreshes -- stored in `st.session_state` -- so the path stays on screen while vehicles continue moving around it.
+3. **PathLayer (shortest path).** A black line showing the road-network shortest path between two selected zones, when requested. This layer is only present when the user has clicked "Find shortest path". It persists across refreshes -- stored in `st.session_state` -- so the path stays on screen while vehicles continue moving around it.
 
 ### Stale Data Warning
 

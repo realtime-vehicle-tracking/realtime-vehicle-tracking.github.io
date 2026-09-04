@@ -168,6 +168,8 @@ Longest named roads:
   Croydon Road                   primary      30.0 mph   865.69 m
 ```
 
+The duplicate entries reflect different directed edges sharing the same display attributes. For example, two segments of a road traveling in opposite directions. The graph data in Aura is correct.
+
 For Merton, we expect 3,203 intersections and 7,278 roads after deduplication. Home Park Road, at over a kilometre, is a residential street. Croydon Road, at 30 mph, is a local connector across parts of the borough.
 
 ## Alternate Cities

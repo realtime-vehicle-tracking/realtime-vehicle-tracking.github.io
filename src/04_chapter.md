@@ -169,7 +169,7 @@ cursor.executemany("""
 ```
 
 - For Merton, the zones are Wimbledon, Raynes Park, Colliers Wood, Mitcham and Morden.
-- For San Francisco, the zones are Noe Valley, Castro, Glen Park, Bernal Heights and Visitacion Valley
+- For San Francisco, the zones are Noe Valley, Castro, Glen Park, Bernal Heights and Visitacion Valley.
 - For Singapore, the zones are Toa Payoh, Bishan, Ang Mo Kio, Serangoon and Novena.
 
 ## Connecting to Lakebase

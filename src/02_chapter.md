@@ -97,7 +97,7 @@ edges_clean = (
 )
 ```
 
-This reduces Merton's 7,317 raw edges to 7,276 clean edges with 41 duplicates removed.
+This reduces Merton's 7,317 raw edges to 7,278 clean edges with duplicates removed.
 
 ## Loading Into Aura
 
@@ -158,14 +158,17 @@ After loading, we verify the counts match expectations and inspect the longest n
 
 ```
 Intersections : 3,203
-Roads         : 7,276
+Roads         : 7,278
 
 Longest named roads:
-  Home Park Road    residential    20 mph    1013 m
-  Croydon Road      primary        30 mph     982 m
+  Home Park Road                 residential  20.0 mph   1013.41 m
+  Home Park Road                 residential  20.0 mph   1013.41 m
+  Croydon Road                   primary      30.0 mph   982.52 m
+  Croydon Road                   primary      30.0 mph   982.52 m
+  Croydon Road                   primary      30.0 mph   865.69 m
 ```
 
-For Merton, we expect 3,203 intersections and 7,276 roads after deduplication. Home Park Road, at over a kilometre, is a residential street. Croydon Road, at 30 mph, is a local connector across parts of the borough.
+For Merton, we expect 3,203 intersections and 7,278 roads after deduplication. Home Park Road, at over a kilometre, is a residential street. Croydon Road, at 30 mph, is a local connector across parts of the borough.
 
 ## Alternate Cities
 

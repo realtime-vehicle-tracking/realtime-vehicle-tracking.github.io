@@ -18,7 +18,7 @@ We'll also show how to adapt the entire system to a different city by changing a
 
 The architecture has three layers, each serving a different purpose.
 
-**Neo4j Aura** is the graph layer. It holds the road network for Merton -- 3,203 intersections and 7,276 road segments loaded from OpenStreetMap via the OSMnx library. Aura answers the questions that a relational database handles with difficulty:
+**Neo4j Aura** is the graph layer. It holds the road network for Merton -- 3,203 intersections and 7,278 road segments loaded from OpenStreetMap via the OSMnx library. Aura answers the questions that a relational database handles with difficulty:
 
 - What's the shortest path between two points along drivable roads?
 - Which zones border which other zones?

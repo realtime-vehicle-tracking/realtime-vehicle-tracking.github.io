@@ -25,7 +25,7 @@ The order of operations matters. Work through the notebooks in sequence:
 7. In a terminal: `streamlit run app.py`
 8. In a second terminal: `streamlit run analytics_app.py --server.port 8502`
 
-**Switching cities.** Copy `config_sf.yaml` or `config_sg.yaml` to `config.yaml`, clear the Aura database and re-run notebooks 2 through 5. Both Streamlit applications pick up the new city automatically on restart.
+**Switching cities.** Copy `config_sf.yaml` or `config_sg.yaml` to `config.yaml` and re-run notebooks 2 through 5. Notebook 2 clears the existing graph before loading the new city. Both Streamlit applications pick up the new city automatically on restart.
 
 ## Adding a New City
 

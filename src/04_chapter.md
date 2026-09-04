@@ -32,7 +32,7 @@ Then create a dedicated application role in the Lakebase SQL editor:
 -- 1. Create the application role
 CREATE ROLE vehicle_tracker
     LOGIN
-    PASSWORD 'your_strong_password_here';
+    PASSWORD 'your-strong-password';
 
 -- 2. Allow access to the public schema
 GRANT USAGE
@@ -53,14 +53,14 @@ GRANT USAGE, SELECT
 SELECT current_user;
 
 -- 6. Grant CRUD access to future tables created by that role
-ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username_here>
+ALTER DEFAULT PRIVILEGES FOR ROLE <your-databricks-username>
     IN SCHEMA public
     GRANT SELECT, INSERT, UPDATE, DELETE
     ON TABLES
     TO vehicle_tracker;
 
 -- 7. Grant sequence access to future sequences
-ALTER DEFAULT PRIVILEGES FOR ROLE <your_databricks_username_here>
+ALTER DEFAULT PRIVILEGES FOR ROLE <your-databricks-username>
     IN SCHEMA public
     GRANT USAGE, SELECT
     ON SEQUENCES
@@ -73,7 +73,7 @@ Replace `LAKEBASE_TOKEN` with `LAKEBASE_PASSWORD` in all connection code and set
 
 ```bash
 export LAKEBASE_USER="vehicle_tracker"
-export LAKEBASE_PASSWORD="your_strong_password_here"
+export LAKEBASE_PASSWORD="your-strong-password"
 ```
 
 The password doesn't expire, so you won't need to refresh it between sessions.

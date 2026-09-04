@@ -190,21 +190,30 @@ Dead ends are more common in the San Francisco and Singapore graphs, where some 
 When the simulator starts, it prints a summary of the zone distribution and the initial route assignment for each vehicle:
 
 ```
-Simulator started (PID 87163)
+Simulator started (PID 12313)
 Using Python: /Users/veryfatboy/vehicle-tracker-env/bin/python3.12
-Connecting to Neo4j...
-Loaded 3,203 nodes and 7,276 directed edges
-Zone distribution: {'Wimbledon': 839, 'Raynes Park': 761, ...}
-Neo4j connection closed after graph load.
+Connecting to Neo4j Aura...
+Loaded 3,203 nodes and 7,278 directed edges
+Zone distribution: {'Wimbledon': 839, 'Raynes Park': 761, 'Colliers Wood': 544, 'Mitcham': 723, 'Morden': 335, 'Unknown': 1}
+Neo4j Aura connection closed after graph load.
 
-Connecting to Postgres...
+Connecting to Lakebase...
 
 Placing vehicles and computing initial routes...
-  V001: route 45 hops -> Colliers Wood
-  V002: route 23 hops -> Wimbledon
-  ...
+  V001: route 32 hops -> Colliers Wood
+  V002: route 36 hops -> Colliers Wood
+  V003: route 27 hops -> Wimbledon
+  V004: route 38 hops -> Raynes Park
+  V005: route 32 hops -> Wimbledon
+  V006: route 51 hops -> Wimbledon
+  V007: route 34 hops -> Mitcham
+  V008: route 62 hops -> Colliers Wood
+  V009: route 67 hops -> Mitcham
+  V010: route 38 hops -> Morden
 
-Simulator running. Tick every ~2s. Press Ctrl+C to stop.
+Simulator running. Tick every ~2s.
+
+Simulator is running in the background.
 ```
 
 The hop count shows how long each vehicle's initial route is. Routes of 20-80 hops are typical for Merton. Occasionally a vehicle gets a very long route (100+ hops) if BFS finds a winding path through a dense part of the network, which is normal and produces interesting movement on the map.

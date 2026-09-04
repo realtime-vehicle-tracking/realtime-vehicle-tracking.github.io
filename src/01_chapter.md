@@ -40,7 +40,7 @@ Each system has a clear role and none of the roles overlap.
 
 ## What Aura Adds
 
-A natural question is: why Aura? We already have a Postgres database. Can't we just store road network data there too? We could store it there. But querying it could be difficult. The shortest path between two points requires traversing a graph -- following edges from node to node, keeping track of visited nodes and finding the minimum-cost sequence. In SQL this means recursive CTEs, which are slow for deep traversals. In Cypher, Aura's query language, it's a single function call. For example:
+A natural question is: what does Aura add? We already have a Postgres database. Can't we just store road network data there too? We could store it there. But querying it could be difficult. The shortest path between two points requires traversing a graph -- following edges from node to node, keeping track of visited nodes and finding the minimum-cost sequence. In SQL this means recursive CTEs, which are slow for deep traversals. In Cypher, Aura's query language, it's a single function call. For example:
 
 ```cypher
 MATCH path = shortestPath((start)-[:ROAD*..300]->(end))

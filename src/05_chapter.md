@@ -191,7 +191,7 @@ When the simulator starts, it prints a summary of the zone distribution and the 
 
 ```
 Simulator started (PID 87163)
-Using Python: /Users/veryfatboy/myenv/bin/python3.12
+Using Python: /Users/veryfatboy/vehicle-tracker-env/bin/python3.12
 Connecting to Neo4j...
 Loaded 3,203 nodes and 7,276 directed edges
 Zone distribution: {'Wimbledon': 839, 'Raynes Park': 761, ...}

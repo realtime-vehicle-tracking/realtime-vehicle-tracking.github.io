@@ -239,7 +239,7 @@ Latest position per vehicle:
   V010         51.38796   -0.20437  Morden          2026-09-03 ...
 ```
 
-Thirty records after a few seconds of running means ten vehicles have each written three positions, which is exactly right for a 2-second tick interval.
+The total record count grows continuously as the simulator runs -- ten vehicles writing every two seconds. The latest position per vehicle confirms each is active and reporting from the correct zone.
 
 ## Gotchas
 

@@ -186,7 +186,7 @@ Second, the shortest path query crosses zone boundaries. The zone context, which
 The simulator uses zone membership in two ways. At startup, it reads zone membership counts from Aura to confirm the graph loaded correctly:
 
 ```
-Zone distribution: {'Wimbledon': 839, 'Raynes Park': 761, ...}
+Zone distribution: {'Wimbledon': 839, 'Raynes Park': 761, 'Colliers Wood': 544, 'Mitcham': 723, 'Morden': 335, 'Unknown': 1}
 ```
 
 At runtime, it determines the `current_zone` of each vehicle by checking which zone the vehicle's current intersection belongs to. This is achieved with an in-memory dictionary built from Aura data at startup, not a live Aura query per tick, so it adds no latency to the simulation loop.

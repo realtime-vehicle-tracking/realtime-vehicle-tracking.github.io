@@ -37,7 +37,7 @@ G = ox.graph_from_place("London Borough of Merton, UK", network_type="drive")
 
 The `network_type="drive"` filter keeps only roads that cars can use, excluding footpaths, cycleways and pedestrian areas.
 
-For alternate cities, such as San Francisco and Singapore, where neighborhood polygon boundaries are either unavailable or produce disconnected subgraphs, we use a different approach: download a regional OSM data file from Geofabrik and clip it to a bounding box using `pyrosm`. This is covered in notebook `00_prepare_osm`, which runs once before the road network notebook to prepare the clipped file.
+For alternate cities, such as San Francisco and Singapore, where neighborhood polygon boundaries are either unavailable or produce disconnected subgraphs, we use a different approach: download a regional OSM data file from Geofabrik and clip it to a bounding box using `pyrosm`. This is covered in notebook `00_prepare_osm.ipynb`, which runs once before the road network notebook to prepare the clipped file.
 
 The city config file (`config.yaml`) tells notebook 2 which approach to use:
 
@@ -172,7 +172,7 @@ For Merton, we expect 3,203 intersections and 7,278 roads after deduplication. H
 
 ## Alternate Cities
 
-For San Francisco and Singapore, the road network is loaded from a pre-clipped OSM file rather than using the Overpass API. The `00_prepare_osm` notebook handles downloading the regional file from Geofabrik and clipping it to the bounding box defined in the city config. You can regenerate these files at any time by running that notebook with the appropriate config.
+For San Francisco and Singapore, the road network is loaded from a pre-clipped OSM file rather than using the Overpass API. The `00_prepare_osm.ipynb` notebook handles downloading the regional file from Geofabrik and clipping it to the bounding box defined in the city config. You can regenerate these files at any time by running that notebook with the appropriate config.
 
 The clipped files are included in the GitHub repo, so you won't need to run the prepare notebook.
 

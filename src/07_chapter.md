@@ -55,11 +55,11 @@ If Nominatim returns a polygon, use `osmnx_place` as a single string in your con
 
 It's worth noting why three systems are better than one for this use case.
 
-**Why not just Aura?** Aura is excellent for graph queries and spatial lookups. But it's not designed for high-frequency OLTP writes. Inserting 300 rows per minute, continuously, with low latency and strong consistency guarantees, is what Postgres is built for. Lakebase gives us a production-grade Postgres instance with no infrastructure to manage.
+**Why not just Aura?** Neo4j Aura is purpose-built for graph traversals and spatial queries -- exactly what we use it for. Road networks, zone adjacency and shortest path computation are natural fits for a graph database. The native spatial index on intersection nodes makes nearest-neighbor lookups fast regardless of how many intersections the graph contains. Also, a shortest path query that would require a recursive CTE in SQL is a single function call in Cypher.
 
-**Why not just Lakebase?** Lakebase can store the road network as a table of edges and you can find shortest paths with recursive CTEs. But the queries are verbose, slow for deep traversals and don't scale to multi-hop zone reachability queries. A graph database handles these naturally.
+**Why not just Lakebase?** Lakebase is purpose-built for operational data -- high-frequency writes, transactional consistency and low-latency row reads. It handles the live vehicle positions exactly as we'd want a production Postgres database to. Foreign key constraints, BIGSERIAL auto-increment and standard SQL all work exactly as expected.
 
-**Why not just Lakehouse?** Lakehouse is excellent for large-scale analytics and historical queries. But it's not designed for low-latency row reads or high-frequency inserts. Reading the latest position of 10 vehicles from a Delta table on every 3-second refresh would be much slower and more expensive than reading from Lakebase.
+**Why not just Lakehouse?** Lakehouse is excellent for large-scale analytics and historical queries. It's designed for aggregating millions of position records by zone, identifying the busiest road segments over time and running SQL across large Delta tables. The columnar storage and parallel execution make these queries fast at scale, and the Delta table format adds reliability through ACID transactions and time-travel capability.
 
 The three-system architecture isn't complexity for its own sake. Each system does what it's genuinely good at and the results are combined at the application layer.
 
@@ -77,4 +77,4 @@ The system as built is a working demo. Here are some directions for making it mo
 
 **H3 indexing.** Uber's H3 library provides a hexagonal grid system that covers the globe at multiple resolutions. Indexing intersections by H3 cell would make the nearest-driver query more efficient at scale and is the approach used in production ride-hailing systems.
 
-**Kafka integration.** Replacing the simulator's direct Lakebase writes with a Kafka producer and adding a consumer that writes to Lakebase, would make the architecture more production-ready. It would also decouple the simulator from Lakebase, as the simulator could run even when Lakebase is temporarily unavailable, with positions queued in Kafka until connectivity is restored.
+**Kafka integration.** Replacing the simulator's direct Lakebase writes with a Kafka producer and adding a consumer that writes to Lakebase would make the architecture more production-ready. It would also decouple the simulator from Lakebase, as the simulator could run even when Lakebase is temporarily unavailable, with positions queued in Kafka until connectivity is restored.

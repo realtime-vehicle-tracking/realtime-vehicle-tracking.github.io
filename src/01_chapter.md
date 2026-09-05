@@ -34,7 +34,7 @@ The relationship between these systems is as follows:
 
 - Aura is where the *structure* lives -- the road graph that neither Lakebase nor Lakehouse knows anything about.
 - Lakebase is where data is *written*, in real time, by the simulator.
-- Lakehouse is where we *analyse* the history that Lakebase accumulates.
+- Lakehouse is where we *analyze* the history that Lakebase accumulates.
 
 Each system has a clear role and none of the roles overlap.
 

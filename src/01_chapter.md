@@ -28,7 +28,7 @@ The native spatial index on intersection nodes makes nearest-neighbor lookups fa
 
 **Databricks Lakebase** is the operational layer. It's a fully managed Postgres database, hosted inside Databricks, that accepts the high-frequency position writes from our vehicle simulator. Every two seconds, ten vehicles each write their current coordinates to a `vehicle_positions` table. Lakebase handles this with standard `psycopg2` connectivity, foreign key constraints and BIGSERIAL auto-increment IDs. The token-based authentication enforces a natural session boundary, as the system runs for an hour at a time, which is the right behavior for a demo.
 
-**Databricks Lakehouse** is the analytics layer. We'll connect to it from a local Jupyter notebook. Position data flows from Lakebase into a Delta table, where we run aggregations, such as zone demand over time, position volume trends and the cross-system join that answers "which named roads carry the most traffic?" by combining Lakebase position data with Aura road names.
+**Databricks Lakehouse** is the analytics layer. Position data flows from Lakebase into a Delta table, where we run aggregations, such as zone demand over time, position volume trends and the cross-system join that answers "which named roads carry the most traffic?" by combining Lakebase position data with Aura road names.
 
 The relationship between these systems is as follows:
 

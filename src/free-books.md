@@ -19,13 +19,13 @@ A hands-on cookbook covering SingleStore's multi-model capabilities, from time s
 
 A practical guide that takes one vector database per day and pairs each with a use case chosen to showcase that database's strengths. Databases covered:
 
-1. Semantic job search with PostgreSQL and pgvector
-2. Recipe finding with MongoDB Atlas
-3. E-commerce search with Pinecone
-4. Research paper discovery with Weaviate
-5. Fraud detection with Neo4j
-6. Customer support analytics with Snowflake
-7. RAG over internal documents with Databricks
+1. PostgreSQL and pgvector - Semantic job search
+2. MongoDB Atlas - Recipe finder
+3. Pinecone - E-commerce search
+4. Weaviate - Research paper discovery
+5. Neo4j - Fraud detection
+6. Snowflake - Customer support analytics
+7. Databricks - RAG over internal documents
 
 Each chapter is self-contained, comes with a Jupyter notebook and gives an assessment of when you'd look elsewhere.
 

@@ -14,4 +14,4 @@ Full license text: https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
 
 ---
 
-The code in this repository (notebooks, SQL, Python, R scripts and all files under `code/`) is licensed under the Apache License 2.0 — see the `LICENSE` file for details.
+The code in this repository (notebooks, SQL, Python scripts and all files under `code/`) is licensed under the Apache License 2.0 — see the `LICENSE` file for details.

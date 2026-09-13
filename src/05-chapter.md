@@ -6,10 +6,10 @@ The simulator is the engine that gives life to the system. It loads the road net
 
 The simulator has four responsibilities:
 
-1. Load the road graph from Aura once at startup into an in-memory adjacency structure
-2. Compute an initial route for each vehicle using Breadth-First Search (BFS)
-3. Move each vehicle one intersection at a time along its route, writing a position record to Lakebase at each tick
-4. Assign a new destination when a vehicle reaches the end of its current route
+1. Load the road graph from Aura once at startup into an in-memory adjacency structure.
+2. Compute an initial route for each vehicle using Breadth-First Search (BFS).
+3. Move each vehicle one intersection at a time along its route, writing a position record to Lakebase at each tick.
+4. Assign a new destination when a vehicle reaches the end of its current route.
 
 It runs as a background subprocess, started from the Jupyter notebook and continues independently while you use the Streamlit dashboard.
 
@@ -29,8 +29,8 @@ proc = subprocess.Popen(
 
 Two details are important here:
 
-1. `sys.executable` uses the virtual environment's Python interpreter; using the bare `python` command would pick up the system Python, which doesn't have `neo4j` or `psycopg2` installed
-2. `-u` (unbuffered) combined with `PYTHONUNBUFFERED=1` forces Python to flush output immediately rather than buffering it, which means we can see the simulator's startup messages in the notebook
+1. `sys.executable` uses the virtual environment's Python interpreter; using the bare `python` command would pick up the system Python, which doesn't have `neo4j` or `psycopg2` installed.
+2. `-u` (unbuffered) combined with `PYTHONUNBUFFERED=1` forces Python to flush output immediately rather than buffering it, which means we can see the simulator's startup messages in the notebook.
 
 After launch, a sentinel loop reads lines from the subprocess until it sees "Simulator running":
 
@@ -101,12 +101,12 @@ When assigning a destination, the simulator picks a zone with 70/30 weighting, t
 
 The simulator runs a simple tick loop. Each tick:
 
-1. Checks for a stop signal (discussed below)
-2. Reconnects to Lakebase if the connection dropped
-3. Advances each vehicle one step along its route
-4. Writes a position record to Lakebase
-5. Assigns a new destination if the vehicle has reached the end of its route
-6. Sleeps for approximately two seconds, with a small random jitter
+1. Checks for a stop signal (discussed below).
+2. Reconnects to Lakebase if the connection dropped.
+3. Advances each vehicle one step along its route.
+4. Writes a position record to Lakebase.
+5. Assigns a new destination if the vehicle has reached the end of its route.
+6. Sleeps for approximately two seconds, with a small random jitter.
 
 The tick jitter (`±0.3` seconds, randomized per tick) prevents all ten vehicles from writing simultaneously, which would create brief spikes in Lakebase write load. Staggered writes produce a smoother stream of position records.
 

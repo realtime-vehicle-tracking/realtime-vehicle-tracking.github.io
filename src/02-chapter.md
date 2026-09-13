@@ -6,10 +6,10 @@ The road network is the foundation of the entire system. Without it, we can't ro
 
 We specifically need:
 
-- Every road intersection as a node, with its GPS coordinates
-- Every drivable road segment as a directed edge, with its name, road type, speed limit and length
-- A spatial index on intersection coordinates so we can quickly find the nearest intersection to any GPS position
-- A connected graph, with no isolated subgraphs, so every vehicle can reach every other zone via some sequence of road segments
+- Every road intersection as a node, with its GPS coordinates.
+- Every drivable road segment as a directed edge, with its name, road type, speed limit and length.
+- A spatial index on intersection coordinates so we can quickly find the nearest intersection to any GPS position.
+- A connected graph, with no isolated subgraphs, so every vehicle can reach every other zone via some sequence of road segments.
 
 OpenStreetMap gives us the raw data. OSMnx gives us the tools to download it, clean it and convert it to a graph we can load into Aura.
 
@@ -84,8 +84,8 @@ rows = df.where(pd.notnull(df), None).to_dict("records")
 
 OSMnx assigns the same `osmid` to multiple edges in two cases:
 
-1. Bidirectional roads, where the same OSM way appears as both A -> B and B -> A
-2. Segmented ways, where a single named road is split into multiple segments sharing one OSM ID
+1. Bidirectional roads, where the same OSM way appears as both A -> B and B -> A.
+2. Segmented ways, where a single named road is split into multiple segments sharing one OSM ID.
 
 The composite key `osmid + u + v` (where `u` and `v` are the source and target node IDs) is usually unique, but not always, as some split ways produce multiple segments with the same `u`, `v` and `osmid` but different lengths. We deduplicate by keeping the longest segment for each `(osmid, u, v)` triple:
 

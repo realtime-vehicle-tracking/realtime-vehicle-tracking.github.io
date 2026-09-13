@@ -17,13 +17,13 @@ None of these systems knows about the others. Aura knows nothing about Lakebase 
 The order of operations matters. Work through the notebooks in sequence:
 
 1. `00_prepare_osm.ipynb` -- For new cities only or if you wish to rerun the data generation for San Francisco or Singapore. Skip for Merton.
-2. `02_road_network.ipynb` -- Loads the road network into Aura
-3. `03_zones.ipynb` -- Assigns intersections to zones and builds the adjacency graph
-4. `04_lakebase.ipynb` -- Creates the Lakebase tables and seeds the vehicles
-5. `05_simulator.ipynb` -- Starts the simulator in the background
-6. `06_analytics.ipynb` -- Optional, for running four analytics queries interactively
-7. In a terminal: `streamlit run app.py`
-8. In a second terminal: `streamlit run analytics_app.py --server.port 8502`
+2. `02_road_network.ipynb` -- Loads the road network into Aura.
+3. `03_zones.ipynb` -- Assigns intersections to zones and builds the adjacency graph.
+4. `04_lakebase.ipynb` -- Creates the Lakebase tables and seeds the vehicles.
+5. `05_simulator.ipynb` -- Starts the simulator in the background.
+6. `06_analytics.ipynb` -- Optional, for running four analytics queries interactively.
+7. In a terminal: `streamlit run app.py`.
+8. In a second terminal: `streamlit run analytics_app.py --server.port 8502`.
 
 **Switching cities.** Copy `config_sf.yaml` or `config_sg.yaml` to `config.yaml` and re-run notebooks 2 through 5. Notebook 2 clears the existing graph before loading the new city. Both Streamlit applications pick up the new city automatically on restart.
 

@@ -123,9 +123,9 @@ ORDER BY updates DESC
 
 The analytics dashboard connects to three systems:
 
-1. Aura for road names in the cross-system join
-2. Lakebase for live position data
-3. Lakehouse for Delta table storage and SQL analytics
+1. Aura for road names in the cross-system join.
+2. Lakebase for live position data.
+3. Lakehouse for Delta table storage and SQL analytics.
 
 All three connections are from a local Jupyter notebook process using standard Python connectors.
 

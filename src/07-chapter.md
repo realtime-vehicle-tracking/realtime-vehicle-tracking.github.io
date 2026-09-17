@@ -73,7 +73,7 @@ The system as built is a working demo. Here are some directions for making it mo
 
 **Lakehouse Sync.** In the demo, position data moves from Lakebase to Lakehouse via the analytics dashboard's incremental sync. In production, Databricks's Lakebase Change Data Feed replicates Lakebase tables into Unity Catalog Delta tables automatically via CDC. This requires enabling the feature from the workspace Previews page and is available on paid Databricks accounts. See the [developer template](https://developers.databricks.com/templates/lakebase-change-data-feed-autoscaling).
 
-**Actual neighborhood boundaries.** The zone bounding boxes are logical approximations. For Merton, ONS and Ordnance Survey provide ward and postcode boundary polygons. For Singapore, OneMap provides URA planning area polygons. For San Francisco, the city publishes official neighborhood boundary GeoJSON. Replacing the bounding boxes with real polygon boundaries would make zone assignment geographically accurate.
+**Actual neighborhood boundaries.** The zone bounding boxes are logical approximations. For Merton, ONS and Ordnance Survey provide ward and postcode boundary polygons. For San Francisco, the city publishes official neighborhood boundary GeoJSON. For Singapore, OneMap provides URA planning area polygons. Replacing the bounding boxes with real polygon boundaries would make zone assignment geographically accurate.
 
 **H3 indexing.** Uber's H3 library provides a hexagonal grid system that covers the globe at multiple resolutions. Indexing intersections by H3 cell would make the nearest-driver query more efficient at scale and is the approach used in production ride-hailing systems.
 

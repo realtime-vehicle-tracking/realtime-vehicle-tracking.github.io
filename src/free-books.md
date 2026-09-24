@@ -74,3 +74,7 @@ Two Streamlit dashboards display live positions and trend data. The primary demo
 ### Real-Time Supply Chain Routing with Neo4j, Snowflake Postgres and Confluent Kafka
 
 In progress.
+
+### Neo4j Beyond the Graph
+
+In progress.

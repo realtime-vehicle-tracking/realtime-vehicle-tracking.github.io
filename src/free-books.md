@@ -73,8 +73,30 @@ Two Streamlit dashboards display live positions and trend data. The primary demo
 
 ### Real-Time Supply Chain Routing with Neo4j, Snowflake Postgres and Confluent Kafka
 
-In progress.
+[Read Online ↗](https://realtime-supply-chain.github.io)
+
+A supply chain routing demo that combines graph-based route optimization with real-time event streaming. The architecture:
+
+- Neo4j Aura holds the supplier and logistics network graph
+- Snowflake Postgres stores product and inventory data
+- Confluent Kafka streams supply chain events in real time
+
+Route queries traverse the graph to find optimal paths between suppliers, warehouses and distribution centres under live capacity and disruption constraints.
+
+***
 
 ### Neo4j Beyond the Graph
 
-In progress.
+[Read Online ↗](https://beyond-the-graph.github.io)
+
+A hands-on guide to Neo4j's multi-model capabilities, going beyond graph traversal to explore seven native features of the platform. Each chapter pairs one capability with a use case chosen to showcase it:
+
+1. Native Graph -- London Underground routing
+2. Full-Text Search -- Research paper discovery
+3. Geospatial -- Air quality along the Pyrenees corridor
+4. Temporal -- S&P 500 stock price analysis
+5. Document-Style Properties -- Library inventory management
+6. Vector Search -- Fashion image similarity
+7. Graph + Vector -- Fraud ring detection
+
+Every chapter comes with a Jupyter notebook and a Streamlit application. All examples run on Neo4j Aura's free tier.

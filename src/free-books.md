@@ -100,3 +100,21 @@ A hands-on guide to Neo4j's multi-model capabilities, going beyond graph travers
 7. Graph + Vector -- Fraud ring detection
 
 Every chapter comes with a Jupyter notebook and a Streamlit application. All examples run on Neo4j Aura's free tier.
+
+***
+
+### Seven Ways to Use Jev
+
+[Read Online ↗](https://seven-ways-jev.github.io)
+
+A practical guide to TypeSafe AI's structured decision model, exploring seven domains where a single `Choice` call -- structured state in, typed decision out, calibrated confidence alongside -- replaces brittle rules-based logic. Each chapter pairs one domain with a hands-on Jupyter notebook and examines what the confidence score reveals about the decision:
+
+1. Transit Routing -- Northern Line branch triage using a NetworkX graph
+2. Customer Support Triage -- ticket routing by team and priority
+3. Financial Fraud Detection -- flag or pass with a three-tier confidence response
+4. Content Moderation -- approve, flag or remove user-generated content
+5. Supply Chain Disruption -- alternative supplier selection under live constraints
+6. Hiring Screening -- CV screening against a structured job description
+7. Medical Symptom Triage -- care pathway assignment with a conservative bias
+
+A recurring theme across all seven chapters: the confidence score is more informative than the decision itself for uncertain cases and the threshold between automatic routing and human review is always a business decision, not a technical one.

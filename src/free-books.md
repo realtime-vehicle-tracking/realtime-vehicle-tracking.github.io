@@ -110,11 +110,11 @@ Every chapter comes with a Jupyter notebook and a Streamlit application. All exa
 A practical guide to TypeSafe AI's structured decision model, exploring seven domains where a single `Choice` call -- structured state in, typed decision out, calibrated confidence alongside -- replaces brittle rules-based logic. Each chapter pairs one domain with a hands-on Jupyter notebook and examines what the confidence score reveals about the decision:
 
 1. Transit Routing -- Northern Line branch triage using a NetworkX graph
-2. Customer Support Triage -- ticket routing by team and priority
-3. Financial Fraud Detection -- flag or pass with a three-tier confidence response
-4. Content Moderation -- approve, flag or remove user-generated content
-5. Supply Chain Disruption -- alternative supplier selection under live constraints
+2. Customer Support Triage -- Ticket routing by team and priority
+3. Financial Fraud Detection -- Flag or pass with a three-tier confidence response
+4. Content Moderation -- Approve, flag or remove user-generated content
+5. Supply Chain Disruption -- Alternative supplier selection under live constraints
 6. Hiring Screening -- CV screening against a structured job description
-7. Medical Symptom Triage -- care pathway assignment with a conservative bias
+7. Medical Symptom Triage -- Care pathway assignment with a conservative bias
 
 A recurring theme across all seven chapters: the confidence score is more informative than the decision itself for uncertain cases and the threshold between automatic routing and human review is always a business decision, not a technical one.

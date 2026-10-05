@@ -2,6 +2,8 @@
 
 ### The SingleStore Cookbook: Recipes for Multi-Model, Machine Learning and AI Data Engineering
 
+![](free-books-media/image1.png)
+
 [Read Online ↗](https://singlestore-cookbook.github.io)
 
 A hands-on cookbook covering SingleStore's multi-model capabilities, from time series and geospatial data through vector search, machine learning pipelines and AI-powered applications. The recipes draw on first-hand experience building applications with the platform and are organized into four parts:
@@ -14,6 +16,8 @@ A hands-on cookbook covering SingleStore's multi-model capabilities, from time s
 ***
 
 ### Seven Vector Databases in Seven Days
+
+![](free-books-media/image2.png)
 
 [Read Online ↗](https://seven-vector-databases.github.io)
 
@@ -33,6 +37,8 @@ Each chapter is self-contained, comes with a Jupyter notebook and gives an asses
 
 ### Generative AI: A Manager's Guide
 
+![](free-books-media/image3.png)
+
 [Read Online ↗](https://gen-ai-managers-guide.github.io)
 
 A practical guide for managers, directors and executives who need to make decisions about AI in their organizations, not the engineers building it, but the people responsible for making it work well. The book uses a single central metaphor, the Digital Intern, to frame what AI is genuinely good at, where it falls short and what managing it actually requires. It covers governance, risk, board-level accountability, business case building and the organizational change of moving from pilot to embedded capability.
@@ -40,6 +46,8 @@ A practical guide for managers, directors and executives who need to make decisi
 ***
 
 ### Seven Ways to Do Vector Search in Python
+
+![](free-books-media/image4.png)
 
 [Read Online ↗](https://seven-vector-search.github.io)
 
@@ -59,6 +67,8 @@ Each chapter covers one library, explains what it's genuinely good at and when y
 
 ### Real-Time Vehicle Tracking with Neo4j, Databricks Lakebase and OpenStreetMap
 
+![](free-books-media/image5.png)
+
 [Read Online ↗](https://realtime-vehicle-tracking.github.io)
 
 A fleet operations demo that puts ten simulated vehicles onto real road networks loaded from OpenStreetMap. The architecture:
@@ -73,6 +83,8 @@ Two Streamlit dashboards display live positions and trend data. The primary demo
 
 ### Real-Time Supply Chain Routing with Neo4j, Snowflake Postgres and Confluent Kafka
 
+![](free-books-media/image6.png)
+
 [Read Online ↗](https://realtime-supply-chain.github.io)
 
 A supply chain routing demo that combines graph-based route optimization with real-time event streaming. The architecture:
@@ -86,6 +98,8 @@ Route queries traverse the graph to find optimal paths between suppliers, wareho
 ***
 
 ### Neo4j Beyond the Graph
+
+![](free-books-media/image7.png)
 
 [Read Online ↗](https://beyond-the-graph.github.io)
 
@@ -104,6 +118,8 @@ Every chapter comes with a Jupyter notebook and a Streamlit application. All exa
 ***
 
 ### Seven Ways to Use Jev
+
+![](free-books-media/image8.png)
 
 [Read Online ↗](https://seven-ways-jev.github.io)
 

@@ -105,7 +105,7 @@ A supply chain routing demo that combines graph-based route optimization with re
 - Snowflake Postgres stores product and inventory data
 - Confluent Kafka streams supply chain events in real time
 
-Route queries traverse the graph to find optimal paths between suppliers, warehouses and distribution centres under live capacity and disruption constraints.
+Route queries traverse the graph to find optimal paths between suppliers, warehouses and distribution centers under live capacity and disruption constraints.
 
 ***
 
@@ -117,13 +117,13 @@ Route queries traverse the graph to find optimal paths between suppliers, wareho
 
 A hands-on guide to Neo4j's multi-model capabilities, going beyond graph traversal to explore seven native features of the platform. Each chapter pairs one capability with a use case chosen to showcase it:
 
-1. Native Graph -- London Underground routing
-2. Full-Text Search -- Research paper discovery
-3. Geospatial -- Air quality along the Pyrenees corridor
-4. Temporal -- S&P 500 stock price analysis
-5. Document-Style Properties -- Library inventory management
-6. Vector Search -- Fashion image similarity
-7. Graph + Vector -- Fraud ring detection
+1. Native Graph - London Underground routing
+2. Full-Text Search - Research paper discovery
+3. Geospatial - Air quality along the Pyrenees corridor
+4. Temporal - S&P 500 stock price analysis
+5. Document-Style Properties - Library inventory management
+6. Vector Search - Fashion image similarity
+7. Graph + Vector - Fraud ring detection
 
 Every chapter comes with a Jupyter notebook and a Streamlit application. All examples run on Neo4j Aura's free tier.
 
@@ -137,12 +137,12 @@ Every chapter comes with a Jupyter notebook and a Streamlit application. All exa
 
 A practical guide to TypeSafe AI's structured decision model, exploring seven domains where a single `Choice` call -- structured state in, typed decision out, calibrated confidence alongside -- replaces brittle rules-based logic. Each chapter pairs one domain with a hands-on Jupyter notebook and examines what the confidence score reveals about the decision:
 
-1. Transit Routing -- Northern Line branch triage using a NetworkX graph
-2. Customer Support Triage -- Ticket routing by team and priority
-3. Financial Fraud Detection -- Flag or pass with a three-tier confidence response
-4. Content Moderation -- Approve, flag or remove user-generated content
-5. Supply Chain Disruption -- Alternative supplier selection under live constraints
-6. Hiring Screening -- CV screening against a structured job description
-7. Medical Symptom Triage -- Care pathway assignment with a conservative bias
+1. Transit Routing - Northern Line branch triage using a NetworkX graph
+2. Customer Support Triage - Ticket routing by team and priority
+3. Financial Fraud Detection - Flag or pass with a three-tier confidence response
+4. Content Moderation - Approve, flag or remove user-generated content
+5. Supply Chain Disruption - Alternative supplier selection under live constraints
+6. Hiring Screening - CV screening against a structured job description
+7. Medical Symptom Triage - Care pathway assignment with a conservative bias
 
 A recurring theme across all seven chapters: the confidence score is more informative than the decision itself for uncertain cases and the threshold between automatic routing and human review is always a business decision, not a technical one.

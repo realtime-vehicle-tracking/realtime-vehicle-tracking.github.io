@@ -146,3 +146,23 @@ A practical guide to TypeSafe AI's structured decision model, exploring seven do
 7. Medical Symptom Triage - Care pathway assignment with a conservative bias
 
 A recurring theme across all seven chapters: the confidence score is more informative than the decision itself for uncertain cases and the threshold between automatic routing and human review is always a business decision, not a technical one.
+
+***
+
+### Lessons Learned Putting Jev Inside Neo4j
+
+![](free-books-media/image9.png)
+
+[Read Online ↗](https://jev-inside-neo4j.github.io)
+
+A hands-on account of building a Neo4j function and batch procedure in Java that ask a model to make a decision about a node and store the answer back in the graph. The book follows one running example, 500 synthetic transactions and each chapter adds the code that the previous chapter's problem called for. The lessons:
+
+1. Why in the Database - Where a decision belongs and what the finished function returns
+2. A First Working Function - Converting Neo4j's types on the way in and out
+3. Failures as Data - Returning errors as values so one bad node can't stop a query
+4. Testing Without a Network - Seams for the network and the clock, with 68 fast tests
+5. Keeping the Key Safe - Sending a credential only to the host the parser reports
+6. Many at Once - A bounded, ordered pool and a measured concurrency sweep
+7. Running It Locally - Swapping in a small local model and seeing how the judgment changes
+
+Every chapter with code has its own folder in the repository and each Cypher script also comes as a notebook, so you can use whichever you prefer. The results are reported as measured, including the ones we can't explain!

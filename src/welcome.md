@@ -1,4 +1,4 @@
-# Real-Time Vehicle Tracking with Neo4j, Databricks Lakebase and OpenStreetMap
+# Welcome
 
 ## How to Cite This Book
 

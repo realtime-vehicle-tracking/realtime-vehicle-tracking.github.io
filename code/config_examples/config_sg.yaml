@@ -4,9 +4,12 @@
 # Road network loaded from a pre-clipped OSM file (singapore-central.osm.pbf)
 # downloaded from Geofabrik and clipped using pyrosm.
 #
+# Zones are logical simplified zones for the graph demo, not official
+# Singapore planning area boundary polygons.
+#
 # To regenerate the clipped file:
 #   1. Download malaysia-singapore-brunei-latest.osm.pbf from Geofabrik
-#   2. Run the pyrosm clipping notebook
+#   2. Run 01_prepare_osm.ipynb
 
 city:
   name: "Singapore Central"

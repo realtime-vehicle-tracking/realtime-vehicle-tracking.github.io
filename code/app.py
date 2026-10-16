@@ -95,30 +95,6 @@ def get_neo4j_driver():
         st.error(f"Neo4j connection failed: {e}")
         return None
 
-def _pg_alive(conn):
-    """Return True if the Lakebase connection is still open and usable."""
-    if conn is None:
-        return False
-    if conn.closed != 0:
-        return False
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT 1")
-        cursor.close()
-        return True
-    except Exception:
-        return False
-
-def _neo4j_alive(driver):
-    """Return True if the Neo4j driver can reach the server."""
-    if driver is None:
-        return False
-    try:
-        driver.verify_connectivity()
-        return True
-    except Exception:
-        return False
-
 def get_live_pg():
     """Return the cached Lakebase connection, reconnecting only on failure."""
     conn = get_pg_conn()
@@ -183,6 +159,7 @@ def get_vehicle_positions(conn):
             vp.vehicle_id,
             v.driver_name,
             v.zone,
+            vp.current_zone,
             vp.lat,
             vp.lon,
             vp.recorded_at
@@ -192,7 +169,7 @@ def get_vehicle_positions(conn):
     """)
     rows = cursor.fetchall()
     cursor.close()
-    return pd.DataFrame(rows, columns=["vehicle_id", "driver_name", "zone", "lat", "lon", "recorded_at"])
+    return pd.DataFrame(rows, columns=["vehicle_id", "driver_name", "zone", "current_zone", "lat", "lon", "recorded_at"])
 
 def get_vehicle_trails(conn):
     """Last TRAIL_LENGTH positions per vehicle for the path layer."""
@@ -512,7 +489,7 @@ with col_map:
     else:
         caption = f"Showing {len(positions)} vehicles. Refreshes every {REFRESH_MS // 1000}s."
         if st.session_state.path_coords:
-            caption += f" Route: {st.session_state.path_from} → {st.session_state.path_to} ({st.session_state.path_dist_km} km, {st.session_state.path_hops} intersections)."
+            caption += f" Route: {st.session_state.path_from} → {st.session_state.path_to} ({st.session_state.path_dist_km} km, {st.session_state.path_hops} hops)."
         st.caption(caption)
 
 # ---------------------------------------------------------------------------
@@ -527,7 +504,7 @@ with col_right:
         nearby_zones = []
 
     if not positions.empty and nearby_zones:
-        nearby = positions[positions["zone"].isin(nearby_zones)]
+        nearby = positions[positions["current_zone"].isin(nearby_zones)]
         if nearby.empty:
             st.warning(f"No vehicles near {selected_zone}.")
         else:
@@ -542,7 +519,7 @@ with col_right:
 |---|---|
 | **Vehicle** | {best['vehicle_id']} |
 | **Driver** | {best['driver_name']} |
-| **Zone** | {best['zone']} |
+| **Current zone** | {best['current_zone']} |
 """)
         st.caption(f"Zones checked: {', '.join(sorted(nearby_zones))}")
 
@@ -590,7 +567,7 @@ with col_right:
 | **From** | {st.session_state.path_from} |
 | **To** | {st.session_state.path_to} |
 | **Distance** | {dist_km} km |
-| **Intersections** | {hops} |
+| **Hops** | {hops} |
 | **Est. drive time** | {est_mins} min |
 """)
         st.caption("Est. at 30 km/h average.")

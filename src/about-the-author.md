@@ -1,4 +1,4 @@
-# About the Author
+# About the author
 
 Akmal Chaudhri is a technical leader, educator and author with extensive experience in databases, AI and developer relations. He specializes in technical writing, developer education and community building, helping engineers and organizations understand and adopt complex technologies through clear, practical and engaging content. He is a frequent international speaker, a published author and a contributor to industry discussions on data platforms, AI and software development.
 

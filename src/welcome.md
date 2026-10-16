@@ -1,6 +1,6 @@
 # Welcome
 
-## How to Cite This Book
+## How to cite this book
 
 If you use this book in your work, please cite it as:
 

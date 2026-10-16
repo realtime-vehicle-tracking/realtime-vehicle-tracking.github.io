@@ -6,7 +6,7 @@
 #
 # The underlying OSM road network is the full London Borough of Merton,
 # downloaded via OSMnx. The zone rectangles are a simplified abstraction
-# used for vehicle dispatch, zone activity reporting and graph queries.
+# used for vehicle routing, zone activity reporting and graph queries.
 #
 # center_lat / center_lon are verified road-network coordinates used for
 # nearest-node lookup when computing shortest paths. They may fall outside

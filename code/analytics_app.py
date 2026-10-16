@@ -1,5 +1,4 @@
 import os
-import time
 
 import pandas as pd
 import plotly.express as px
@@ -117,8 +116,8 @@ def load_road_data():
             df = pd.DataFrame([{
                 "road_name": rec["road_name"],
                 "highway":   rec["highway"],
-                "lat_r":     round(rec["lat"], 3),
-                "lon_r":     round(rec["lon"], 3),
+                "lat":       rec["lat"],
+                "lon":       rec["lon"],
             } for rec in result])
         return df
     except (ServiceUnavailable, SessionExpired) as e:
@@ -241,6 +240,7 @@ def get_zone_activity(db_conn):
                 COUNT(*) AS updates
             FROM {TABLE_NAME}
             WHERE current_zone IS NOT NULL
+              AND recorded_at >= current_timestamp() - INTERVAL {HISTORY_MINS} MINUTES
             GROUP BY current_zone, DATE_TRUNC('minute', recorded_at)
             ORDER BY minute, zone
         """)
@@ -258,18 +258,24 @@ def get_top_roads(db_conn, road_df):
     try:
         cursor = db_conn.cursor()
         cursor.execute(f"USE {CATALOG_NAME}.{SCHEMA_NAME}")
-        cursor.execute(f"SELECT vehicle_id, lat, lon FROM {TABLE_NAME}")
+        cursor.execute(f"""
+            SELECT vehicle_id, lat, lon FROM {TABLE_NAME}
+            WHERE recorded_at >= current_timestamp() - INTERVAL {HISTORY_MINS} MINUTES
+        """)
         pos_df = pd.DataFrame(cursor.fetchall(), columns=["vehicle_id", "lat", "lon"])
         cursor.close()
 
-        pos_df["lat_r"] = pos_df["lat"].round(3)
-        pos_df["lon_r"] = pos_df["lon"].round(3)
+        # Positions sit exactly on intersections, so join on the coordinates
+        # (rounded to 6 decimals to guard against floating-point noise)
+        pos_df["lat_r"] = pos_df["lat"].round(6)
+        pos_df["lon_r"] = pos_df["lon"].round(6)
 
-        joined = pos_df.merge(
-            road_df[["road_name", "highway", "lat_r", "lon_r"]],
-            on=["lat_r", "lon_r"],
-            how="inner"
-        )
+        roads = road_df[["road_name", "highway", "lat", "lon"]].copy()
+        roads["lat_r"] = roads["lat"].round(6)
+        roads["lon_r"] = roads["lon"].round(6)
+        roads = roads[["road_name", "highway", "lat_r", "lon_r"]].drop_duplicates()
+
+        joined = pos_df.merge(roads, on=["lat_r", "lon_r"], how="inner")
 
         return (
             joined.groupby(["road_name", "highway"])
@@ -299,15 +305,11 @@ if "table_exists" not in st.session_state:
     st.session_state.table_exists = False
 
 # ---------------------------------------------------------------------------
-# Auto-refresh
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
 # Sidebar -- controls
 # ---------------------------------------------------------------------------
 
 st.sidebar.title(f"{_cfg['city']['name']} Analytics")
-st.sidebar.markdown(f"Live analytics dashboard refreshing every 30 seconds.")
+st.sidebar.markdown("Live analytics dashboard refreshing every 30 seconds.")
 st.sidebar.divider()
 
 st.sidebar.markdown("**Simulator Control**")

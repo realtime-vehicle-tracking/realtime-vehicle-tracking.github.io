@@ -1,32 +1,32 @@
-# Chapter 1: Architecture and Setup
+# Chapter 1: Architecture and setup
 
-## What We're Building
+## What we're building
 
 Real-time vehicle tracking sits at the intersection of three distinct data problems:
 
-1. **Graph problem** -- what's the fastest route between two points on an actual road network and which zones are reachable from where?
+1. **Graph problem** -- what's the shortest route between two points on an actual road network and which zones are reachable from where?
 2. **Operational problem** -- where are my vehicles right now and where have they been?
 3. **Analytical problem** -- which areas of the city are seeing the most activity and which roads carry the most traffic?
 
 Each of those problems has a natural home in a different kind of database. That's the core idea behind this book. We're not going to use one database and make it do everything. We're going to use three and let each one do what it does best.
 
-The system we'll build is a fleet operations dashboard for the London Borough of Merton -- a compact urban borough in South London with a dense road network that's large enough to be interesting but small enough to run on free-tier accounts. Ten simulated vehicles move around the borough following real road connections loaded from OpenStreetMap. A live Streamlit dashboard shows their positions, trails and the shortest path between any two zones. A separate analytics dashboard shows zone activity over time and which named roads carry the most traffic.
+The system we'll build is a fleet operations dashboard for the London Borough of Merton -- a compact urban borough in South London with a dense road network that's large enough to be interesting but small enough to run on free-tier accounts. Ten simulated vehicles move around the borough following real road connections loaded from OpenStreetMap. A live Streamlit dashboard shows their positions, trails, the nearest driver to any zone and the shortest path between any two zones. A separate analytics dashboard shows zone activity over time and which named roads carry the most traffic.
 
 We'll also show how to adapt the entire system to a different city by changing a single configuration file. Additional example configuration files are provided for San Francisco and Singapore.
 
-## The Three-System Architecture
+## The three-system architecture
 
 The architecture has three layers, each serving a different purpose.
 
-**Neo4j Aura** is the graph layer. It holds the road network for Merton -- 3,203 intersections and 7,278 road segments loaded from OpenStreetMap via the OSMnx library. Aura answers the questions that a relational database handles with difficulty:
+**Neo4j Aura** is the graph layer. It holds the road network for Merton -- 3,212 intersections and 7,296 road segments loaded from OpenStreetMap via the OSMnx library. Aura answers the questions that a relational database handles with difficulty:
 
 - What's the shortest path between two points along drivable roads?
 - Which zones border which other zones?
 - Which intersections are the most connected hubs of the network?
 
-The native spatial index on intersection nodes makes nearest-neighbor lookups fast enough to run on every map refresh.
+Each intersection carries a native spatial point, and nearest-neighbor lookups are fast enough to run on every map refresh for a network of this size.
 
-**Databricks Lakebase** is the operational layer. It's a fully managed Postgres database, hosted inside Databricks, that accepts the high-frequency position writes from our vehicle simulator. Every two seconds, ten vehicles each write their current coordinates to a `vehicle_positions` table. Lakebase handles this with standard `psycopg2` connectivity, foreign key constraints and BIGSERIAL auto-increment IDs. The token-based authentication enforces a natural session boundary, as the system runs for an hour at a time, which is the right behavior for a demo.
+**Databricks Lakebase** is the operational layer. It's a fully managed Postgres database, hosted inside Databricks, that accepts the high-frequency position writes from our vehicle simulator. Every two seconds, ten vehicles each write their current coordinates to a `vehicle_positions` table. Lakebase handles this with standard `psycopg2` connectivity, foreign key constraints and BIGSERIAL auto-increment IDs. The token-based authentication enforces a natural session boundary, as each token lasts an hour, which is the right behavior for a demo.
 
 **Databricks Lakehouse** is the analytics layer. Position data flows from Lakebase into a Delta table, where we run aggregations, such as zone demand over time, position volume trends and the cross-system join that answers "which named roads carry the most traffic?" by combining Lakebase position data with Aura road names.
 
@@ -38,38 +38,41 @@ The relationship between these systems is as follows:
 
 Each system has a clear role and none of the roles overlap.
 
-## What Aura Adds
+## What Aura adds
 
-A natural question is: what does Aura add? We already have a Postgres database. Can't we just store road network data there too? We could store it there. But querying it could be difficult. The shortest path between two points requires traversing a graph -- following edges from node to node, keeping track of visited nodes and finding the minimum-cost sequence. In SQL this means recursive CTEs, which are slow for deep traversals. In Cypher, Aura's query language, it's a single function call. For example:
+A natural question is: what does Aura add? We already have a Postgres database. Can't we just store road network data there too? We could store it there. But querying it could be difficult. The shortest path between two points requires traversing a graph -- following edges from node to node, keeping track of visited nodes and finding the sequence with the fewest hops. In SQL this means recursive CTEs, which are slow for deep traversals. In Cypher, Aura's query language, it's a single function call. For example:
 
 ```cypher
-MATCH path = shortestPath((start)-[:ROAD*..300]->(end))
+MATCH (a:Intersection {node_id: $start_id}), (b:Intersection {node_id: $end_id})
+MATCH path = shortestPath((a)-[:ROAD*..300]->(b))
 RETURN length(path) AS hops
 ```
 
-The zone adjacency queries are similarly clean. "Which zones can be reached within two hops from Morden?" is a two-line Cypher query. In SQL it would require multiple self-joins or a recursive CTE that grows in complexity with each additional hop.
+The zone adjacency queries are similarly clean. "Which zones can be reached within two hops from Morden?" is a short Cypher query. In SQL it would require multiple self-joins or a recursive CTE that grows in complexity with each additional hop.
 
 Also, the road network *is* a graph. Intersections are nodes. Roads are edges. The connectivity between them is the point. Storing that as rows and columns in a relational table is possible but goes against the natural structure of the data.
 
-## The Configuration File
+## The configuration file
 
-Every city-specific value in the system lives in a single YAML file called `config.yaml`. The zone definitions, vehicle assignments, map coordinates and OpenStreetMap place name all come from this file. Switching from London to San Francisco or Singapore means copying a different config file into place and re-running the notebooks.
+Every city-specific value in the system lives in a single YAML file called `config.yaml`. The zone definitions, zone adjacency, vehicle assignments, map coordinates, schema name and OpenStreetMap place name all come from this file. For cities that use a local OSM file, the file name, source URL and bounding box live there too. Switching from London to San Francisco or Singapore means copying a different config file into place and re-running the notebooks.
 
 There are three example configs:
 
 1. `config.yaml` -- the London Borough of Merton (the default)
-2. `config_sf.yaml` -- five neighborhoods in southern San Francisco
+2. `config_sf.yaml` -- five neighborhoods in central and southeastern San Francisco
 3. `config_sg.yaml` -- five planning areas in central Singapore
 
 The supporting code in `config_validator.py` validates the config file on load and raises clear errors if anything is missing or malformed.
 
-## What You'll Need
+One optional notebook accompanies this chapter. `01_prepare_osm.ipynb` downloads and clips an OpenStreetMap file for cities that use a local file instead of the Overpass API. The clipped files for San Francisco and Singapore are already in the repository, so you only need this notebook to regenerate them or to prepare your own city. Merton doesn't need it. If you do run it, run it before `02_road_network.ipynb`.
+
+## What you'll need
 
 To follow along you'll need accounts and access to these services:
 
-1. **Neo4j Aura** -- the free tier is sufficient. Create an account at [Get Started for Free](https://console.neo4j.io/graphacademy) and note your URI, username and password.
-2. **Databricks** -- a free trial account gives us access to both Lakebase and Lakehouse. Create an account at [Databricks Free Edition](https://login.databricks.com/select-product?provider=DB_FREE_TIER). Create a Lakebase project named `vehicle-tracker` and a SQL warehouse before running the notebooks.
-3. **Python** -- we'll use Python 3.12 throughout. The notebooks run in a local Jupyter environment. A virtual environment is highly recommended. For example:
+1. **Neo4j Aura** -- the free tier is sufficient. Create an account at [Get Started for Free](https://console.neo4j.io/graphacademy) and note your URI, username and password. Use an instance you're happy to wipe, because the notebooks clear the database before loading.
+2. **Databricks** -- a Free Edition account gives us access to both Lakebase and Lakehouse. Create an account at [Databricks Free Edition](https://login.databricks.com/select-product?provider=DB_FREE_TIER). Create a Lakebase project named `vehicle-tracker` and a SQL warehouse before running the notebooks.
+3. **Python** -- the code was tested using Python 3.12 and it may not work on more recent versions of Python. The notebooks run in a local Jupyter environment. A virtual environment is highly recommended. For example:
 
 ```bash
 python3 -m venv ~/vehicle-tracker-env
@@ -78,7 +81,7 @@ source ~/vehicle-tracker-env/bin/activate
 
 All dependencies are installed using `%pip install` cells at the top of each notebook, with pinned versions for stability.
 
-## Environment Variables
+## Environment variables
 
 Credentials are passed to notebooks and the Streamlit applications using environment variables. Set these before starting Jupyter:
 
@@ -102,9 +105,7 @@ export DATABRICKS_TOKEN="your-personal-access-token"
 
 Note that `LAKEBASE_TOKEN` expires after one hour. This is by design -- it's Databricks's authentication model for OAuth-based access and it gives us a natural session boundary. When it expires, we need to generate a fresh token from the Lakebase Connect dialog in the Databricks UI and update the `LAKEBASE_TOKEN` environment variable.
 
-For longer-running sessions, Chapter 4 explains how to set up and use a native Postgres role with a permanent password instead.
-
-## Chapter Overview
+## Chapter overview
 
 Here's what each chapter covers:
 
@@ -112,7 +113,7 @@ Here's what each chapter covers:
 
 **Chapter 3: Zones and Graph Queries** defines the five zones that divide the borough, assigns each intersection to its zone and builds the zone adjacency graph. We'll show the Cypher queries that make the zone topology useful, such as nearest neighbors, multi-hop reachability and complex intersection counts.
 
-**Chapter 4: The Operational Layer** sets up the Lakebase tables that hold live vehicle data. We'll cover the table design, the indexes that make time-series queries fast and the credential options for connecting from Python.
+**Chapter 4: The Operational Layer** sets up the Lakebase tables that hold live vehicle data. We'll cover the table design, the indexes that make time-series queries fast and the credentials for connecting from Python.
 
 **Chapter 5: The Simulator** writes a vehicle simulator that loads the road network from Aura, places ten vehicles in their home zones and moves each one along Breadth-First Search (BFS)-computed shortest paths. The simulator runs as a background process and writes position updates to Lakebase every two seconds.
 

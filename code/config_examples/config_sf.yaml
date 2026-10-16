@@ -9,7 +9,7 @@
 #
 # To regenerate the clipped file:
 #   1. Download california-latest.osm.pbf from Geofabrik
-#   2. Run 00_prepare_osm.ipynb
+#   2. Run 01_prepare_osm.ipynb
 
 city:
   name: "San Francisco"

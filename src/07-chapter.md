@@ -1,4 +1,4 @@
-# Chapter 7: Bringing it all together
+# Chapter 7: Bringing It All Together
 
 ## The full system
 

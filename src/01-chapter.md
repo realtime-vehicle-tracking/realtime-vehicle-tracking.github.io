@@ -1,4 +1,4 @@
-# Chapter 1: Architecture and setup
+# Chapter 1: Architecture and Setup
 
 ## What we're building
 

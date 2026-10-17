@@ -1,4 +1,4 @@
-# Chapter 5: The simulator
+# Chapter 5: The Simulator
 
 ## What the simulator does
 

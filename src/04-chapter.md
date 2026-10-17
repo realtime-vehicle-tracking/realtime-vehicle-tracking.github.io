@@ -1,4 +1,4 @@
-# Chapter 4: The operational layer
+# Chapter 4: The Operational Layer
 
 ## What the operational layer does
 

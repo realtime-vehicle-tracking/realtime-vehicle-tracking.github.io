@@ -1,4 +1,4 @@
-# Chapter 3: Zones and graph queries
+# Chapter 3: Zones and Graph Queries
 
 ## Why zones?
 

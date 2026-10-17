@@ -1,4 +1,4 @@
-# Chapter 6: The Streamlit apps
+# Chapter 6: The Streamlit Apps
 
 ## Two dashboards
 
